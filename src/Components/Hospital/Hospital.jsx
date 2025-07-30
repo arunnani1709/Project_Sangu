@@ -60,11 +60,27 @@ const physiotherapyFacilities = [
 ];
 
 const treatments = [
-  { title: "Ksharasutra Therapy" },
-  { title: "Agnikarma (Thermal Cautery)" },
-  { title: "Physiotherapy" },
+  { title: "Virechana" },
+  { title: "Vamana" },
+  { title: "Basti" },
+  { title: "Nasya" },
+  { title: "Agni Karma" },
+  { title: "Valuka Sweda" },
+  { title: "Parisheka" },
+  { title: "Uttara Basti" },
+  { title: "Nasya Karma" },
+  { title: "Abhyanga" },
+  { title: "Kati Basti" },
+  { title: "Janu Basti" },
+  { title: "Greeva Basti" },
+  { title: "Shiro Basti" },
+  { title: "Udvarthana" },
+  { title: "Shastika Shali Pinda Sweda" },
+  { title: "Jalukavacharana" },
+  { title: "Bashpasweda" },
   { title: "Leech Therapy" },
   { title: "Nadi Pariksha (Pulse Diagnosis)" },
+  { title: "Physiotherapy" },
   { title: "Cupping Therapy" },
   { title: "Lifestyle & Diet Consultation" },
   { title: "Yoga & Meditation" },
@@ -178,13 +194,13 @@ const Hospital = () => {
           {/* Treatments */}
           <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl max-w-7xl mx-auto">
             <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">Treatments We Provide</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 ">
               {treatments.map((treatment, index) => (
                 <div
                   key={index}
                   className="bg-green-50 border border-green-100 rounded-xl p-4 shadow-sm hover:shadow-md transition duration-300"
                 >
-                  <h3 className="text-lg font-semibold text-green-700 mb-1">
+                  <h3 className="text-lg font-semibold text-green-700 mb-1 text-center">
                     {treatment.title}
                   </h3>
                 </div>
