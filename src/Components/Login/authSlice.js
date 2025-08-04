@@ -1,51 +1,80 @@
 // src/features/auth/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Async login logic
-export const loginUser = createAsyncThunk("auth/loginUser", async (formData, thunkAPI) => {
-  const { username, password } = formData;
+// Async login logic (simulated backend check)
+export const loginUser = createAsyncThunk(
+  "auth/loginUser",
+  async (formData, thunkAPI) => {
+    try {
+      const { username, password } = formData;
 
-  if (username === "admin" && password === "admin123") {
-    const user = { role: "admin", name: "Admin" };
-    localStorage.setItem("user", JSON.stringify(user));
-    return user;
+      let user = null;
+
+      if (username === "admin" && password === "admin123") {
+        user = { role: "admin", name: "Admin" };
+      } else if (password === "doctor123") {
+        user = { role: "doctor", name: username };
+      } else {
+        return thunkAPI.rejectWithValue("Invalid credentials");
+      }
+
+      // Simulate token generation
+      const token = "dummy-token-" + Date.now();
+
+      // Save to localStorage
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+
+      return { user, token };
+    } catch (error) {
+      return thunkAPI.rejectWithValue("Login failed",error);
+    }
   }
+);
 
-  if (password === "doctor123") {
-    const user = { role: "doctor", name: username };
-    localStorage.setItem("user", JSON.stringify(user));
-    return user;
+// Restore session from localStorage
+export const syncAuthFromStorage = createAsyncThunk(
+  "auth/syncAuthFromStorage",
+  async (_, thunkAPI) => {
+    const user = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+
+    if (user && token) {
+      return {
+        user: JSON.parse(user),
+        token,
+      };
+    } else {
+      return thunkAPI.rejectWithValue("No auth data in storage");
+    }
   }
+);
 
-  return thunkAPI.rejectWithValue("Invalid credentials");
-});
+// Initial state
+const userFromStorage = localStorage.getItem("user");
+const tokenFromStorage = localStorage.getItem("token");
 
-// Restore login from localStorage
-export const syncAuthFromStorage = () => (dispatch) => {
-  const storedUser = localStorage.getItem("user");
-  if (storedUser) {
-    dispatch(setUser(JSON.parse(storedUser)));
-  }
+const initialState = {
+  user: userFromStorage ? JSON.parse(userFromStorage) : null,
+  token: tokenFromStorage || null,
+  isAuthenticated: !!tokenFromStorage,
+  status: "idle",
+  error: null,
 };
 
 // Slice
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    user: JSON.parse(localStorage.getItem("user")) || null,
-    isAuthenticated: !!localStorage.getItem("user"),
-    status: "idle",
-    error: null,
-  },
+  initialState,
   reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload;
-      state.isAuthenticated = true;
-    },
     logout: (state) => {
-      localStorage.removeItem("user");
       state.user = null;
+      state.token = null;
       state.isAuthenticated = false;
+      state.status = "idle";
+      state.error = null;
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {
@@ -55,16 +84,27 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
         state.isAuthenticated = true;
+        state.status = "succeeded";
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
+      })
+      .addCase(syncAuthFromStorage.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+      })
+      .addCase(syncAuthFromStorage.rejected, (state) => {
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
       });
   },
 });
 
-export const { logout, setUser } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;
