@@ -4,7 +4,6 @@ import { useInView } from "react-intersection-observer";
 // Local images
 import sangameshPhoto from "../Photos/Sangamesh.jpg";
 import Doctor2 from "../Photos/Doctor2.jpg";
-import Doctor3 from "../Photos/Doctor3.jpg";
 import Doctor4 from "../Photos/Doctor4.jpg";
 import bgabout from "../Photos/bgabout.jpg"; // Background image
 
@@ -22,13 +21,6 @@ const doctors = [
     photo: Doctor2,
     description:
       "Dr. John is a board-certified dermatologist focused on treating chronic skin conditions. He’s a leading expert in laser therapies and cosmetic dermatology, with over 10 years in practice.",
-  },
-  {
-    name: "Dr. Maria Gomez",
-    specialization: "Neurologist",
-    photo: Doctor3,
-    description:
-      "Dr. Gomez brings two decades of neurological expertise, specializing in stroke management and neurodegenerative disorders. Her research has contributed to advancements in brain health.",
   },
   {
     name: "Dr. Sangamesh Patil",

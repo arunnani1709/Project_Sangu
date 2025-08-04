@@ -13,6 +13,8 @@ import Hospital from './Components/Hospital/Hospital';
 import Latestupdates from './Components/LatestUpdates/Latestupdate';
 import Login from './Components/Login/Login';
 import Home from './Components/Home/Home';
+import AdminBlogPanel from './Components/AdminBlogPanel/AdminBlogPanel'
+
 
 //import LatestUpdates from './pages/LatestUpdates';
 const AuthSyncWrapper = ({ children }) => {
@@ -39,6 +41,8 @@ function App() {
           <Route path="hospital" element={<Hospital/>} />
           <Route path="latest-updates" element={<Latestupdates/>} />
           <Route path="home" element={<PrivateRoute><Home/></PrivateRoute>} />
+          <Route path="admin-blog" element={<PrivateRoute><AdminBlogPanel/></PrivateRoute>} />
+     
           
         </Route>
       </Routes>

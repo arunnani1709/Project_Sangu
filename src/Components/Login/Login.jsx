@@ -39,7 +39,7 @@ const Login = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center" style={{ height: 'calc(100vh - 125px)' }}>
+    <div className="relative flex items-center justify-center" style={{ height: 'calc(100vh - 79px)' }}>
   {/* Background Image */}
   <div
     className="absolute inset-0 bg-cover bg-center z-0 opacity-90"

@@ -1,6 +1,8 @@
 import React from "react";
-import Slider from "react-slick";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useInView } from "react-intersection-observer";
+
 import {
   FaBed, FaHeartbeat, FaHandHoldingMedical, FaSpa, FaCapsules, FaProcedures,
   FaHandsHelping, FaSyringe, FaDumbbell, FaHotjar, FaWalking, FaUserMd, FaDna
@@ -8,15 +10,13 @@ import {
 import { FaBowlFood } from "react-icons/fa6";
 import { MdLocalPharmacy } from "react-icons/md";
 import { GiUltrasound, GiMuscleUp, GiMedicalPack } from "react-icons/gi";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 import Hospital1 from "../Photos/Hospital1.jpg";
 import Hospital2 from "../Photos/Hospital2.jpg";
 import Hospital3 from "../Photos/Hospital3.jpg";
 import Hospitalbg from "../Photos/Hospitalbg.jpg";
 
-// Card with animation
+// Animated Card Component
 const AnimatedCard = ({ children, index }) => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
   return (
@@ -32,7 +32,7 @@ const AnimatedCard = ({ children, index }) => {
   );
 };
 
-// Data
+// Facilities and treatments data
 const panchakarmaFacilities = [
   { icon: <FaSpa size={30} className="text-green-600" />, title: "Panchakarma Theaters", description: "Two fully equipped Panchakarma theaters with traditional & modern amenities." },
   { icon: <FaWalking size={30} className="text-green-600" />, title: "Physiotherapy", description: "Comprehensive physio unit offering rehab, pain management, and wellness support." },
@@ -60,107 +60,82 @@ const physiotherapyFacilities = [
 ];
 
 const treatments = [
-  { title: "Virechana" },
-  { title: "Vamana" },
-  { title: "Basti" },
-  { title: "Nasya" },
-  { title: "Agni Karma" },
-  { title: "Valuka Sweda" },
-  { title: "Parisheka" },
-  { title: "Uttara Basti" },
-  { title: "Nasya Karma" },
-  { title: "Abhyanga" },
-  { title: "Kati Basti" },
-  { title: "Janu Basti" },
-  { title: "Greeva Basti" },
-  { title: "Shiro Basti" },
-  { title: "Udvarthana" },
-  { title: "Shastika Shali Pinda Sweda" },
-  { title: "Jalukavacharana" },
-  { title: "Bashpasweda" },
-  { title: "Leech Therapy" },
-  { title: "Nadi Pariksha (Pulse Diagnosis)" },
-  { title: "Physiotherapy" },
-  { title: "Cupping Therapy" },
-  { title: "Lifestyle & Diet Consultation" },
-  { title: "Yoga & Meditation" },
+  "Virechana", "Vamana", "Basti", "Nasya", "Agni Karma", "Valuka Sweda", "Parisheka",
+  "Uttara Basti", "Nasya Karma", "Abhyanga", "Kati Basti", "Janu Basti", "Greeva Basti",
+  "Shiro Basti", "Udvarthana", "Shastika Shali Pinda Sweda", "Jalukavacharana",
+  "Bashpasweda", "Leech Therapy", "Nadi Pariksha (Pulse Diagnosis)", "Physiotherapy",
+  "Cupping Therapy", "Lifestyle & Diet Consultation", "Yoga & Meditation"
 ];
-
-// Slider settings
-const sliderSettings = {
-  dots: true,
-  infinite: true,
-  autoplay: true,
-  speed: 1000,
-  autoplaySpeed: 3000,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  arrows: true,
-};
 
 const Hospital = () => {
   return (
     <>
-      {/* Accommodation Section */}
-    <section className="text-black py-16 px-6 md:px-20 relative overflow-hidden">
-  {/* Light transparent background image */}
-  <div
-    className="absolute inset-0 bg-cover bg-center opacity-10 -z-10"
-    style={{ backgroundImage: `url(${Hospitalbg})` }}
-  />
- <div className="bg-white/70 rounded-2xl shadow-xl p-4 ">
-  <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
-    {/* Text Content */}
-    <div className="md:w-1/2 z-10">
-      <h2 className="text-3xl font-bold mb-4">Accommodation Facilities</h2>
-      <p className="mb-4 leading-relaxed">
-        Spread over 1 lakh sq. ft, our hospital offers rooms from general wards to premium suites.
-      </p>
-      <ul className="space-y-2 pl-4 list-disc text-black/90">
-        <li>General Wards</li>
-        <li>Semi Private Wards (14 Sharing)</li>
-        <li>Private Wards (3 Sharing)</li>
-        <li>Standard Suites</li>
-        <li>Deluxe Suites</li>
-        <li>Premium Suites</li>
-        <li>Platinum Suites</li>
-      </ul>
-    </div>
-
-    {/* Image Slider with white rounded bg */}
-    <div className="md:w-1/2 w-full">
-     
-        <Slider {...sliderSettings}>
-          {[Hospital1, Hospital2, Hospital3].map((src, idx) => (
-            <div key={idx} className="px-2">
-              <img
-                src={src}
-                alt={`Room ${idx + 1}`}
-                className="rounded-lg w-full h-[300px] object-cover"
-              />
-            </div>
-          ))}
-        </Slider>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-      {/* Blended Background Section */}
-      <div className="relative overflow-hidden ">
-        {/* Background Image */}
+      {/* 🛏 Accommodation Section */}
+     <section className="relative   text-black py-16 px-6 md:px-20 overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-40 -z-10"
-          style={{ backgroundImage: `url(${Hospitalbg})` }}
-        />
-     
+     className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+     style={{
+      backgroundImage: `url(${Hospitalbg})`,
+      opacity: 0.2, // 👈 Reduce this value to make it lighter
+    }}
+  />
+        <div className="bg-white rounded-2xl shadow-xl p-4">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
+            <div className="md:w-1/2 z-10">
+              <h2 className="text-3xl font-bold mb-4">Accommodation Facilities</h2>
+              <p className="mb-4 leading-relaxed">
+                Spread over 1 lakh sq. ft, our hospital offers rooms from general wards to premium suites.
+              </p>
+              <ul className="space-y-2 pl-4 list-disc text-black">
+                <li>General Wards</li>
+                <li>Semi Private Wards (14 Sharing)</li>
+                <li>Private Wards (3 Sharing)</li>
+                <li>Standard Suites</li>
+                <li>Deluxe Suites</li>
+                <li>Premium Suites</li>
+                <li>Platinum Suites</li>
+              </ul>
+            </div>
 
-        {/* Sections start here */}
-        <div className="py-20 px-4 md:px-16 space-y-24">
+            <div className="md:w-1/2 w-full">
+              <Carousel
+                autoPlay
+                infiniteLoop
+                showThumbs={false}
+                showStatus={false}
+                interval={3000}
+                transitionTime={800}
+                showArrows
+              >
+                {[Hospital1, Hospital2, Hospital3].map((src, idx) => (
+                  <div key={idx} className="px-2">
+                    <img
+                      src={src}
+                      alt={`Room ${idx + 1}`}
+                      className="rounded-lg w-full h-[300px] object-cover"
+                    />
+                  </div>
+                ))}
+              </Carousel>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          {/* Panchakarma */}
-          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl max-w-7xl mx-auto">
+      {/* 🏥 Facilities & Treatments Section with Background */}
+      <section className="relative  text-black py-16 px-6 md:px-20 overflow-hidden">
+    {/* Background image layer with opacity */}
+        <div
+     className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+     style={{
+      backgroundImage: `url(${Hospitalbg})`,
+      opacity: 0.2, // 👈 Reduce this value to make it lighter
+    }}
+  />
+
+        <div className="py-20 px-4 md:px-16 space-y-24 relative z-10">
+          {/* Panchakarma Facilities */}
+          <div className="bg-white backdrop-blur-sm p-6 rounded-xl max-w-7xl mx-auto">
             <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">Our Hospital Facilities</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {panchakarmaFacilities.map((facility, index) => (
@@ -175,8 +150,8 @@ const Hospital = () => {
             </div>
           </div>
 
-          {/* Physiotherapy */}
-          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl max-w-7xl mx-auto">
+          {/* Physiotherapy Facilities */}
+          <div className="bg-white backdrop-blur-sm p-6 rounded-xl max-w-7xl mx-auto">
             <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">Our Physiotherapy Facilities</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {physiotherapyFacilities.map((facility, index) => (
@@ -192,26 +167,26 @@ const Hospital = () => {
           </div>
 
           {/* Treatments */}
-          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl max-w-7xl mx-auto">
+          <div className="bg-white backdrop-blur-sm p-6 rounded-xl max-w-7xl mx-auto">
             <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">Treatments We Provide</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {treatments.map((treatment, index) => (
                 <div
                   key={index}
                   className="bg-green-50 border border-green-100 rounded-xl p-4 shadow-sm hover:shadow-md transition duration-300"
                 >
                   <h3 className="text-lg font-semibold text-green-700 mb-1 text-center">
-                    {treatment.title}
+                    {treatment}
                   </h3>
                 </div>
               ))}
             </div>
           </div>
         </div>
-
-        {/* Optional bottom gradient */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white z-0" />
-      </div>
+         </section>
+        {/* Optional fade bottom gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white z-0"></div>
+      
     </>
   );
 };
