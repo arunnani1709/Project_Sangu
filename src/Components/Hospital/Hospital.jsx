@@ -84,16 +84,12 @@ const Hospital = () => {
             <div className="md:w-1/2 z-10">
               <h2 className="text-3xl font-bold mb-4">Accommodation Facilities</h2>
               <p className="mb-4 leading-relaxed">
-                Spread over 1 lakh sq. ft, our hospital offers rooms from general wards to premium suites.
+               our hospital offers rooms from general wards .
               </p>
               <ul className="space-y-2 pl-4 list-disc text-black">
-                <li>General Wards</li>
-                <li>Semi Private Wards (14 Sharing)</li>
-                <li>Private Wards (3 Sharing)</li>
-                <li>Standard Suites</li>
-                <li>Deluxe Suites</li>
-                <li>Premium Suites</li>
-                <li>Platinum Suites</li>
+                <li>General Ward</li>
+                <li>10 IPD Beds</li>
+                <li>Food for IPD Patent</li>
               </ul>
             </div>
 

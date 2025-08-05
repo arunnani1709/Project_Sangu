@@ -54,12 +54,14 @@ const handleLogout = () => {
         {/* Desktop Navigation (only when NOT logged in) */}
         {!isAuthenticated && !isHome && (
           <div className="hidden md:flex items-center justify-between flex-1 ml-6">
-            <div className="flex items-center space-x-6">
-              <Link to="/" className="text-white font-semibold hover:text-gray-900">Home</Link>
-              <Link to="/hospital" className="text-white font-semibold hover:text-gray-900">Hospital</Link>
-              <Link to="/about-us" className="text-white font-semibold hover:text-gray-900">About Us</Link>
-              <Link to="/contact" className="text-white font-semibold hover:text-gray-900">Contact</Link>
-            </div>
+           <div className="flex items-center space-x-6 text-black">
+  <Link to="/" className="font-semibold hover:text-white transition-colors duration-200">Home</Link>
+  <Link to="/hospital" className="font-semibold hover:text-white transition-colors duration-200">Hospital</Link>
+  <Link to="/about-us" className="font-semibold hover:text-white transition-colors duration-200">About Us</Link>
+  <Link to="/contact" className="font-semibold hover:text-white transition-colors duration-200">Contact</Link>
+</div>
+
+
 
             <Link
               to="/login"
@@ -73,7 +75,7 @@ const handleLogout = () => {
         {/* Logged-in user profile dropdown */}
         {isAuthenticated && (
   <div className="ml-auto relative flex items-center gap-2" ref={dropdownRef}>
-    <span className="text-white font-medium hidden sm:block">
+    <span className="text-black font-medium hidden sm:block">
       Dr. {user?.name || ""}
     </span>
 
