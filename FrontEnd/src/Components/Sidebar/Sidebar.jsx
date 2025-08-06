@@ -45,17 +45,19 @@ const Sidebar = () => {
 
   if (!isAuthenticated) return null;
 
-  return (
-    <div
-      className={`bg-green-100 text-black h-full border-r shadow-md rounded-md 
-        flex flex-col transition-all duration-500 ease-in-out overflow-hidden 
-        ${collapsed ? 'w-16' : 'w-52'} h-screen`}
-    >
-      <div className="p-2 flex flex-col gap-y-4">
+ return (
+  <div
+    className={`bg-green-100 text-black border-r shadow-md rounded-md 
+      flex flex-col transition-all duration-500 ease-in-out 
+      ${collapsed ? 'w-16' : 'w-52'} h-screen overflow-hidden`}
+  >
+    {/* Scrollable content */}
+    <div className="overflow-y-auto flex-1">
+      <div className="p-2 flex flex-col gap-y-2">
         {/* Toggle Button */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="mb-2 ml-1 mt-2 self-start text-xl text-gray-700 hover:text-green-900 transition-transform duration-300 ease-in-out hover:scale-110"
+          className="mb-2 mt-2 self-start text-xl text-gray-700 hover:text-green-900 transition-transform duration-300 ease-in-out hover:scale-110"
           title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
         >
           <FaBars className={`${collapsed ? 'rotate-180' : 'rotate-0'} transition-transform duration-300`} />
@@ -72,8 +74,9 @@ const Sidebar = () => {
           >
             <div className="text-lg group-hover:scale-110 transition-transform">{item.icon}</div>
             <span
-              className={`whitespace-nowrap text-sm transition-opacity duration-300 
-                ${collapsed ? 'opacity-0 scale-95 w-0 overflow-hidden' : 'opacity-100 scale-100 w-auto'}`}
+              className={`whitespace-pre-wrap text-sm transition-opacity duration-300 
+                ${collapsed ? 'opacity-0 scale-95 w-0 overflow-hidden' : 'opacity-100 scale-100 w-auto'} 
+                md:whitespace-nowrap`}
             >
               {item.label}
             </span>
@@ -81,7 +84,8 @@ const Sidebar = () => {
         ))}
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default Sidebar;
