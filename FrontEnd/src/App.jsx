@@ -14,6 +14,8 @@ import Latestupdates from './Components/LatestUpdates/Latestupdate';
 import Login from './Components/Login/Login';
 import Home from './Components/Home/Home';
 import AdminBlogPanel from './Components/AdminBlogPanel/AdminBlogPanel'
+import AddPatient from './Components/Patients/AddPatients/AddPatent';
+import PatientList from './Components/Patients/PatientList/Patientlist';
 
 
 //import LatestUpdates from './pages/LatestUpdates';
@@ -42,6 +44,8 @@ function App() {
           <Route path="latest-updates" element={<Latestupdates/>} />
           <Route path="home" element={<PrivateRoute><Home/></PrivateRoute>} />
           <Route path="admin-blog" element={<PrivateRoute><AdminBlogPanel/></PrivateRoute>} />
+          <Route path="add-patient" element={<PrivateRoute><AddPatient/></PrivateRoute>} />
+          <Route path="patient-list" element={<PrivateRoute><PatientList/></PrivateRoute>} />
      
           
         </Route>

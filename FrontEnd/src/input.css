@@ -28,3 +28,17 @@
 .animate-slideInRight {
   animation: slideInRight 1s ease-out forwards;
 }
+
+/* input.css */
+
+.expandable-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.expandable-content.expanded {
+  max-height: 300px; /* adjust based on content height */
+  opacity: 1;
+}
