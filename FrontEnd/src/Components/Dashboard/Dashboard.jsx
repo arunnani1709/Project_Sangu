@@ -19,6 +19,7 @@ import Sexrelatedissue from '../Photos/Sexrelatedissue.jpg';
 import Skinalergy from '../Photos/Skinalergy.jpg';
 import Hartproblem from '../Photos/Hartproblem.jpg';
 import Bloodprsure from '../Photos/Bloodprsure.jpg';
+import Decisewetreatbg from '../Photos/Decisewetreatbg.jpg';
 
 const images = [Dash1, Dash2, Dash3, Dash4, Dash5];
 
@@ -88,9 +89,11 @@ const diseases = [
 const Dashboard = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [visibleCards, setVisibleCards] = useState([]);
+  const [headingVisible, setHeadingVisible] = useState(false);
   const navigate = useNavigate();
   const scrollTargetRef = useRef(null);
   const cardRefs = useRef([]);
+  const headingRef = useRef(null);
 
   // Carousel logic
   useEffect(() => {
@@ -130,10 +133,32 @@ const Dashboard = () => {
     };
   }, []);
 
+  // Animate heading when in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeadingVisible(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (headingRef.current) {
+      observer.observe(headingRef.current);
+    }
+
+    return () => {
+      if (headingRef.current) {
+        observer.unobserve(headingRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
       {/* Hero Section - Image Carousel */}
-      <div className="relative w-full h-[650px] sm:h-[600px] md:h-[650px] overflow-hidden">
+      <div className="relative w-full h-[650px] sm:h-[600px] md:h-[670px] overflow-hidden">
         {images.map((img, index) => (
           <img
             key={index}
@@ -145,78 +170,88 @@ const Dashboard = () => {
           />
         ))}
 
-        {/* Gradient only on sm+ screens */}
+        {/* Gradient overlay */}
         <div className="hidden sm:block absolute top-0 left-0 w-[80%] sm:w-[60%] md:w-[55%] h-full bg-gradient-to-r from-green-400 via-green-200 via-green-100 to-transparent z-10" />
 
+        {/* Hero Text */}
         <section className="relative z-20 h-full flex flex-col justify-center px-6 sm:px-10 md:px-16 text-white space-y-6 max-w-[90%] sm:max-w-[80%] md:max-w-[50%] py-20">
-         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight 
-  text-white sm:text-slate-800 
-  drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] sm:drop-shadow-[0_0_10px_rgba(34,197,94,0.6)] 
-  animate-slideInLeft sm:animate-none">
-  Dr. Patil's Navajeevana
-  <br />
-  Ayurveda & Physiotherapy
-</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-white sm:text-slate-800 drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] sm:drop-shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-slideInLeft sm:animate-none">
+            Dr. Patil's Navajeevana
+            <br />
+            Ayurveda & Physiotherapy
+          </h1>
 
-<p className="text-lg sm:text-xl font-semibold font-serif 
-  text-white sm:text-black 
-  drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] sm:drop-shadow-none 
-  animate-slideInLeft sm:animate-none delay-200">
-  Let your body speak the language of balance, and Ayurveda brings harmony to your health.
-</p>
-          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 
-  animate-slideInRight sm:animate-none delay-300">
-  <button
-    onClick={() => navigate('/latest-updates')}
-    className="bg-white text-green-700 px-4 py-2 rounded hover:bg-green-100"
-  >
-    Latest Updates
-  </button>
-  <button
-    onClick={handleScrollToSection}
-    className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
-  >
-    Diseases We Treat
-  </button>
-</div>
+          <p className="text-lg sm:text-xl font-semibold font-serif text-white sm:text-black drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] sm:drop-shadow-none animate-slideInLeft sm:animate-none delay-200">
+            Let your body speak the language of balance, and Ayurveda brings harmony to your health.
+          </p>
 
+          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 animate-slideInRight sm:animate-none delay-300">
+            <button
+              onClick={() => navigate('/latest-updates')}
+              className="bg-white text-green-700 px-4 py-2 rounded hover:bg-green-100"
+            >
+              Latest Updates
+            </button>
+            <button
+              onClick={handleScrollToSection}
+              className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
+            >
+              Diseases We Treat
+            </button>
+          </div>
         </section>
       </div>
 
-      {/* Diseases We Treat Section */}
-      <section
-        ref={scrollTargetRef}
-        className="relative z-20 mt-10 px-4 sm:px-8 py-10 bg-white shadow rounded max-w-7xl mx-auto mb-20"
-      >
-        <h2 className="text-3xl font-bold mb-10 text-green-700 text-center">
-          Diseases We Treat
-        </h2>
+      {/* Diseases Section with fixed background opacity */}
+      <div className="relative p-6 rounded-lg shadow-inner overflow-hidden">
+        {/* Background image with reduced opacity */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 z-0"
+          style={{ backgroundImage: `url(${Decisewetreatbg})` }}
+        />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {diseases.map((card, index) => (
-            <div
-              key={index}
-              ref={(el) => (cardRefs.current[index] = el)}
-              data-index={index}
-              className={`bg-white border rounded-lg shadow transition-all duration-[5200ms] ease-[cubic-bezier(0.29,1,0.36,1)] transform ${
-                visibleCards.includes(index)
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 translate-y-10'
+        {/* Content layer */}
+        <div className="relative z-10">
+          <section
+            ref={scrollTargetRef}
+            className="relative z-20 mt-10 px-4 sm:px-8 py-10 shadow rounded max-w-7xl mx-auto mb-20"
+          >
+            <h2
+              ref={headingRef}
+              className={`text-3xl font-bold mb-10 text-black text-center transition-all duration-1000 ease-out transform ${
+                headingVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
             >
-              <img
-                src={card.img}
-                alt={card.title}
-                className="w-full h-48 object-cover rounded-t-lg"
-              />
-              <div className="p-4">
-                <h3 className="text-xl font-semibold text-green-700">{card.title}</h3>
-                <p className="text-gray-600 text-sm mt-2">{card.description}</p>
-              </div>
+              Diseases We Treat
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+              {diseases.map((card, index) => (
+                <div
+                  key={index}
+                  ref={(el) => (cardRefs.current[index] = el)}
+                  data-index={index}
+                  className={`bg-white bg-opacity-90 backdrop-blur-sm border rounded-lg shadow transition-all duration-[5200ms] ease-[cubic-bezier(0.29,1,0.36,1)] transform ${
+                    visibleCards.includes(index)
+                      ? 'opacity-100 translate-y-0'
+                      : 'opacity-0 translate-y-10'
+                  }`}
+                >
+                  <img
+                    src={card.img}
+                    alt={card.title}
+                    className="w-full h-48 object-cover rounded-t-lg"
+                  />
+                  <div className="p-4">
+                    <h3 className="text-xl font-semibold text-green-700">{card.title}</h3>
+                    <p className="text-gray-600 text-sm mt-2">{card.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </section>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
