@@ -1,57 +1,35 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPatients } from "../../../Redux/patientsSlice"; // fixed path
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const PatientList = () => {
-  const [patients, setPatients] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { list: patients, status } = useSelector((state) => state.patients); // ✅ use list
+
   const [filteredPatients, setFilteredPatients] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedId, setExpandedId] = useState(null);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchPatients());
+    }
+  }, [status, dispatch]);
 
   useEffect(() => {
-    const dummyPatients = [
-      {
-        clinicId: "NJ00001",
-        name: "John Doe",
-        phone: "9876543210",
-        address: "123 Green St, Springfield",
-        visitDate: "2025-08-01",
-      },
-      {
-        clinicId: "NJ00002",
-        name: "Jane Smith",
-        phone: "9123456789",
-        address: "456 Oak Ave, Riverdale",
-        visitDate: "2025-08-03",
-      },
-      {
-        clinicId: "NJ00003",
-        name: "Ali Khan",
-        phone: "9988776655",
-        address: "789 Maple Rd, Metropolis",
-        visitDate: "2025-08-05",
-      },
-      {
-        clinicId: "NJ00004",
-        name: "Meera Patel",
-        phone: "9112233445",
-        address: "321 Birch Blvd, Gotham",
-        visitDate: "2025-08-06",
-      },
-    ];
-
-    setPatients(dummyPatients);
-    setFilteredPatients(dummyPatients);
-  }, []);
+    setFilteredPatients(patients || []);
+  }, [patients]);
 
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(e.target.value);
 
     const searchValue = value.trim().toLowerCase();
-
-    const filtered = patients.filter(
+    const filtered = (patients || []).filter(
       (p) =>
         (p.name && p.name.toLowerCase().includes(searchValue)) ||
         (p.clinicId && p.clinicId.toLowerCase().includes(searchValue)) ||
@@ -77,7 +55,9 @@ const PatientList = () => {
         className="w-full max-w-md px-4 py-2 border rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 mb-6"
       />
 
-      {filteredPatients.length === 0 ? (
+      {status === "loading" ? (
+        <p>Loading patients...</p>
+      ) : filteredPatients.length === 0 ? (
         <p className="text-gray-500">No patients found.</p>
       ) : (
         <>
@@ -95,8 +75,11 @@ const PatientList = () => {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredPatients.map((patient) => (
-                  <tr
+                  <motion.tr
                     key={patient.clinicId}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
                     onClick={() => handleRowClick(patient)}
                     className="cursor-pointer hover:bg-green-200 transition"
                   >
@@ -105,67 +88,53 @@ const PatientList = () => {
                     <td className="px-4 py-2">{patient.phone}</td>
                     <td className="px-4 py-2">{patient.address}</td>
                     <td className="px-4 py-2">{patient.visitDate}</td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
           </div>
 
           {/* Mobile View */}
-{/* Mobile View */}
-<div className="sm:hidden space-y-4 overflow-y-auto max-h-[80vh]">
-  {filteredPatients.map((patient) => {
-    const isExpanded = expandedId === patient.clinicId;
+          <div className="sm:hidden space-y-4 overflow-y-auto max-h-[80vh]">
+            {filteredPatients.map((patient) => {
+              const isExpanded = expandedId === patient.clinicId;
 
-    return (
-      <div
-        key={patient.clinicId}
-        className={`border rounded-md shadow-sm px-4 py-3 transition bg-white ${
-          isExpanded ? "bg-green-100" : ""
-        }`}
-        onClick={() => {
-          // If expanded, navigate when clicking anywhere except clinicId
-          if (isExpanded) {
-            handleRowClick(patient);
-          }
-        }}
-      >
-        <div
-          className="font-semibold text-green-800 text-lg cursor-pointer"
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent triggering parent click
-            if (isExpanded) {
-              setExpandedId(null); // Close if open
-            } else {
-              setExpandedId(patient.clinicId); // Open if closed
-            }
-          }}
-        >
-          {patient.clinicId}
-        </div>
-
-        <div className="text-green-700 font-medium">{patient.name}</div>
-
-        <div
-          className={`mt-2 text-sm text-gray-700 space-y-1 expandable-content ${
-            isExpanded ? "expanded" : ""
-          }`}
-        >
-          <div>
-            <strong>Phone:</strong> {patient.phone}
+              return (
+                <motion.div
+                  key={patient.clinicId}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`border rounded-md shadow-sm px-4 py-3 transition bg-white ${
+                    isExpanded ? "bg-green-100" : ""
+                  }`}
+                  onClick={() => {
+                    if (isExpanded) {
+                      handleRowClick(patient);
+                    }
+                  }}
+                >
+                  <div
+                    className="font-semibold text-green-800 text-lg cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedId(isExpanded ? null : patient.clinicId);
+                    }}
+                  >
+                    {patient.clinicId}
+                  </div>
+                  <div className="text-green-700 font-medium">{patient.name}</div>
+                  {isExpanded && (
+                    <div className="mt-2 text-sm text-gray-700 space-y-1">
+                      <div><strong>Phone:</strong> {patient.phone}</div>
+                      <div><strong>Address:</strong> {patient.address}</div>
+                      <div><strong>Visit Date:</strong> {patient.visitDate}</div>
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
-          <div>
-            <strong>Address:</strong> {patient.address}
-          </div>
-          <div>
-            <strong>Visit Date:</strong> {patient.visitDate}
-          </div>
-          <div className="text-xs text-gray-400">(Tap clinic ID to expand/collapse)</div>
-        </div>
-      </div>
-    );
-  })}
-</div>
         </>
       )}
     </div>
