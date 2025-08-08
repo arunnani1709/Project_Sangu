@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useInView } from "react-intersection-observer";
@@ -16,6 +16,32 @@ import Hospital2 from "../Photos/Hospital2.jpg";
 import Hospital3 from "../Photos/Hospital3.jpg";
 import Hospitalbg from "../Photos/Hospitalbg.jpg";
 
+// Treatment images imported
+import VirechanaImg from "../Photos/Treatement/VirechanaImg.jpg";
+import VamanaImg from "../Photos/Treatement/VamanaImg.jpg";
+import BastiImg from "../Photos/Treatement/BastiImg.jpg";
+import AgniKarmaImg from "../Photos/Treatement/AgniKarmaImg.jpg";
+import ValukaSwedaImg from "../Photos/Treatement/ValukaSwedaImg.jpg";
+import UttaraBastiImg from "../Photos/Treatement/UttaraBastiImg.jpg";
+import AbhyangaImg from "../Photos/Treatement/AbhyangaImg.jpg";
+import KatiBastiImg from "../Photos/Treatement/KatiBastiImg.jpg";
+import JanuBastiImg from "../Photos/Treatement/JanuBastiImg.jpg";
+import GreevaBastiImg from "../Photos/Treatement/GreevaBastiImg.jpg";
+import ShiroBastiImg from "../Photos/Treatement/ShiroBastiImg.jpg";
+import UdvarthanaImg from "../Photos/Treatement/UdvarthanaImg.jpg";
+import ShastikaShaliPindaSwedaImg from "../Photos/Treatement/ShastikaShaliPindaSwedaImg.jpg";
+import BashpaswedaImg from "../Photos/Treatement/BashpaswedaImg.jpg"; // 🛠 Note the correct file name is BashpaswedalImg.jpg
+import LeechTherapyImg from "../Photos/Treatement/LeechTherapyImg.jpg";
+import NadiParikshaImg from "../Photos/Treatement/NadiParikshaImg.jpg";
+import PhysiotherapyImg from "../Photos/Treatement/PhysiotherapyImg.jpg";
+import CuppingTherapyImg from "../Photos/Treatement/CuppingTherapyImg.jpg";
+import LifestyleDietImg from "../Photos/Treatement/LifestyleDietImg.jpg";
+import YogaMeditationImg from "../Photos/Treatement/YogaMeditationImg.jpg";
+import asyaKarmaImg from "../Photos/Treatement/asyaKarmaImg.jpg";
+// import NasyaKarmaImg from "../Photos/Treatement/NasyaKarmaImg.jpg";
+
+
+
 // Animated Card Component
 const AnimatedCard = ({ children, index }) => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -32,7 +58,6 @@ const AnimatedCard = ({ children, index }) => {
   );
 };
 
-// Facilities and treatments data
 const panchakarmaFacilities = [
   { icon: <FaSpa size={30} className="text-green-600" />, title: "Panchakarma Theaters", description: "Two fully equipped Panchakarma theaters with traditional & modern amenities." },
   { icon: <FaWalking size={30} className="text-green-600" />, title: "Physiotherapy", description: "Comprehensive physio unit offering rehab, pain management, and wellness support." },
@@ -59,57 +84,70 @@ const physiotherapyFacilities = [
   { icon: <FaDumbbell size={30} className="text-green-600" />, title: "Exercise Therapy", description: "Custom rehab exercises." },
 ];
 
-const treatments = [
-  "Virechana", "Vamana", "Basti", "Nasya", "Agni Karma", "Valuka Sweda", "Parisheka",
-  "Uttara Basti", "Nasya Karma", "Abhyanga", "Kati Basti", "Janu Basti", "Greeva Basti",
-  "Shiro Basti", "Udvarthana", "Shastika Shali Pinda Sweda", "Jalukavacharana",
-  "Bashpasweda", "Leech Therapy", "Nadi Pariksha (Pulse Diagnosis)", "Physiotherapy",
-  "Cupping Therapy", "Lifestyle & Diet Consultation", "Yoga & Meditation"
+// ✅ Updated treatments array with imported images
+const treatments =[
+  { name: "Virechana", description: "Detoxification through purgation therapy.", image: VirechanaImg },
+  { name: "Vamana", description: "Therapeutic emesis to eliminate Kapha dosha.", image: VamanaImg },
+  { name: "Basti", description: "Enema therapy to balance Vata dosha.", image: BastiImg },
+  { name: "Udvarthana", description: "Dry powder massage to reduce fat and detox.", image: UdvarthanaImg },
+  { name: "Agni Karma", description: "Thermal therapy for chronic pain conditions.", image: AgniKarmaImg },
+  { name: "Bashpasweda", description: "Steam therapy for improving blood circulation.", image: BashpaswedaImg },
+  { name: "Valuka Sweda", description: "Sand bolus sweating therapy for joint pain.", image: ValukaSwedaImg },
+  { name: "Uttara Basti", description: "Enema therapy specific to urinary/reproductive systems.", image: UttaraBastiImg },
+  { name: "Abhyanga", description: "Rejuvenating full-body oil massage.", image: AbhyangaImg },
+  { name: "Kati Basti", description: "Warm oil treatment for lower back pain.", image: KatiBastiImg },
+  { name: "Janu Basti", description: "Oil pooling therapy for knee pain relief.", image: JanuBastiImg },
+  { name: "Greeva Basti", description: "Neck therapy with warm medicated oil.", image: GreevaBastiImg },
+  { name: "Shiro Basti", description: "Oil therapy for stress and mental clarity.", image: ShiroBastiImg },
+  { name: "Leech Therapy", description: "Natural detox using medicinal leeches.", image: LeechTherapyImg },
+  { name: "Physiotherapy", description: "Modern rehab practices for mobility and pain.", image: PhysiotherapyImg },
+  { name: "Cupping Therapy", description: "Suction therapy to increase blood flow.", image: CuppingTherapyImg },
+  { name: "Lifestyle & Diet Consultation", description: "Personalized guidance on food and habits.", image: LifestyleDietImg },
+  { name: "Yoga & Meditation", description: "Mind-body practices for holistic wellness.", image: YogaMeditationImg },
+    { name: "Nadi Pariksha (Pulse Diagnosis)", description: "Traditional pulse-based diagnostic method.", image: NadiParikshaImg },
+{ name: "Asya Karma", description: "Oral therapy for dental and mouth issues.", image: asyaKarmaImg },
+  { name: "Shastika Shali Pinda Sweda", description: "Rejuvenation with rice bolus therapy.", image: ShastikaShaliPindaSwedaImg },
 ];
 
+
+
 const Hospital = () => {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const toggleTreatment = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   return (
     <>
-      {/* 🛏 Accommodation Section */}
-     <section className="relative   text-black py-16 px-6 md:px-20 overflow-hidden">
+      {/* Accommodation Section */}
+      <section className="relative text-black py-16 px-6 md:px-20 overflow-hidden">
         <div
-     className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-     style={{
-      backgroundImage: `url(${Hospitalbg})`,
-      opacity: 0.2, // 👈 Reduce this value to make it lighter
-    }}
-  />
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+          style={{
+            backgroundImage: `url(${Hospitalbg})`,
+            opacity: 0.2,
+          }}
+        />
         <div className="bg-white rounded-2xl shadow-xl p-4">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
             <div className="md:w-1/2 z-10">
               <h2 className="text-3xl font-bold mb-4">Accommodation Facilities</h2>
               <p className="mb-4 leading-relaxed">
-               our hospital offers rooms from general wards .
+                Our hospital offers rooms from general wards.
               </p>
               <ul className="space-y-2 pl-4 list-disc text-black">
                 <li>General Ward</li>
                 <li>10 IPD Beds</li>
-                <li>Food for IPD Patent</li>
+                <li>Food for IPD Patients</li>
               </ul>
             </div>
 
             <div className="md:w-1/2 w-full">
-              <Carousel
-                autoPlay
-                infiniteLoop
-                showThumbs={false}
-                showStatus={false}
-                interval={3000}
-                transitionTime={800}
-                showArrows
-              >
+              <Carousel autoPlay infiniteLoop showThumbs={false} showStatus={false} interval={3000} transitionTime={800} showArrows>
                 {[Hospital1, Hospital2, Hospital3].map((src, idx) => (
                   <div key={idx} className="px-2">
-                    <img
-                      src={src}
-                      alt={`Room ${idx + 1}`}
-                      className="rounded-lg w-full h-[300px] object-cover"
-                    />
+                    <img src={src} alt={`Room ${idx + 1}`} className="rounded-lg w-full h-[300px] object-cover" />
                   </div>
                 ))}
               </Carousel>
@@ -118,16 +156,15 @@ const Hospital = () => {
         </div>
       </section>
 
-      {/* 🏥 Facilities & Treatments Section with Background */}
-      <section className="relative  text-black py-16 px-6 md:px-20 overflow-hidden">
-    {/* Background image layer with opacity */}
+      {/* Facilities & Treatments Section */}
+      <section className="relative text-black py-16 px-6 md:px-20 overflow-hidden">
         <div
-     className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-     style={{
-      backgroundImage: `url(${Hospitalbg})`,
-      opacity: 0.2, // 👈 Reduce this value to make it lighter
-    }}
-  />
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+          style={{
+            backgroundImage: `url(${Hospitalbg})`,
+            opacity: 0.2,
+          }}
+        />
 
         <div className="py-20 px-4 md:px-16 space-y-24 relative z-10">
           {/* Panchakarma Facilities */}
@@ -162,27 +199,48 @@ const Hospital = () => {
             </div>
           </div>
 
-          {/* Treatments */}
+          {/* Treatments with dropdown */}
           <div className="bg-white backdrop-blur-sm p-6 rounded-xl max-w-7xl mx-auto">
             <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">Treatments We Provide</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {treatments.map((treatment, index) => (
-                <div
-                  key={index}
-                  className="bg-green-50 border border-green-100 rounded-xl p-4 shadow-sm hover:shadow-md transition duration-300"
-                >
-                  <h3 className="text-lg font-semibold text-green-700 mb-1 text-center">
-                    {treatment}
-                  </h3>
-                </div>
-              ))}
-            </div>
+            <div className="flex flex-wrap -mx-3">
+  {treatments.map((treatment, index) => (
+    <div
+      key={index}
+      onClick={() => toggleTreatment(index)}
+      className="w-full sm:w-1/2 md:w-1/3 px-3 mb-6 cursor-pointer"
+    >
+      <div
+  className={`bg-green-50 border border-green-100 rounded-xl p-4 shadow-sm transition-all duration-300 flex flex-col justify-start ${
+    openIndex === index ? "shadow-md" : "hover:shadow-md"
+  }`}
+>
+
+        <h3 className="text-lg font-semibold text-green-700 mb-1 text-center">
+          {treatment.name}
+        </h3>
+
+        <div
+          className={`transition-all duration-300 overflow-hidden ${
+            openIndex === index ? "max-h-[1000px] mt-4" : "max-h-0"
+          }`}
+        >
+          <div className="text-center">
+            <img
+              src={treatment.image}
+              alt={treatment.name}
+              className="w-full h-40 object-cover rounded-lg mb-3"
+            />
+            <p className="text-sm text-gray-600">{treatment.description}</p>
           </div>
         </div>
-         </section>
-        {/* Optional fade bottom gradient */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white z-0"></div>
-      
+      </div>
+    </div>
+  ))}
+</div>
+
+          </div>
+        </div>
+      </section>
     </>
   );
 };

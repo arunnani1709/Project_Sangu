@@ -21,9 +21,13 @@ const Sidebar = () => {
     return localStorage.getItem('sidebarCollapsed') === 'true';
   });
 
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   useEffect(() => {
     localStorage.setItem('sidebarCollapsed', collapsed);
   }, [collapsed]);
+
+  if (!isAuthenticated) return null;
 
   const menuItems = [
     { icon: <FaHome />, label: 'Home', path: '/home' },
@@ -34,7 +38,7 @@ const Sidebar = () => {
     { icon: <FaFileMedical />, label: 'Medical Certificate', path: '/medical-certificate' },
     { icon: <FaFileMedicalAlt />, label: 'Medical Certificate List', path: '/medical-certificate-list' },
   ];
-  // Conditionally add Admin Blog item for admin only
+
   if (user?.role === 'admin') {
     menuItems.push({
       icon: <FaNewspaper />,
@@ -43,49 +47,77 @@ const Sidebar = () => {
     });
   }
 
-  if (!isAuthenticated) return null;
-
- return (
-  <div
-    className={`bg-green-100 text-black border-r shadow-md rounded-md 
-      flex flex-col transition-all duration-500 ease-in-out 
-      ${collapsed ? 'w-16' : 'w-52'} h-screen overflow-hidden`}
-  >
-    {/* Scrollable content */}
-    <div className="overflow-y-auto flex-1">
-      <div className="p-2 flex flex-col gap-y-2">
-        {/* Toggle Button */}
+  return (
+    <>
+      {/* ✅ Mobile Toggle Button (Fixed Top Left) */}
+      <div className="md:hidden fixed top-25 left-2 z-50">
         <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="mb-2 mt-2 self-start text-xl text-gray-700 hover:text-green-900 transition-transform duration-300 ease-in-out hover:scale-110"
-          title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="text-2xl text-gray-700 hover:text-green-900 bg-green-100 p-2 rounded shadow"
+          title={mobileOpen ? 'Close Sidebar' : 'Open Sidebar'}
         >
-          <FaBars className={`${collapsed ? 'rotate-180' : 'rotate-0'} transition-transform duration-300`} />
+          <FaBars className={`${mobileOpen ? 'rotate-180' : 'rotate-0'} transition-transform duration-300`} />
         </button>
-
-        {/* Menu Items */}
-        {menuItems.map((item, index) => (
-          <div
-            key={index}
-            onClick={() => navigate(item.path)}
-            className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300
-              hover:bg-green-300 group ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? item.label : ''}
-          >
-            <div className="text-lg group-hover:scale-110 transition-transform">{item.icon}</div>
-            <span
-              className={`whitespace-pre-wrap text-sm transition-opacity duration-300 
-                ${collapsed ? 'opacity-0 scale-95 w-0 overflow-hidden' : 'opacity-100 scale-100 w-auto'} 
-                md:whitespace-nowrap`}
-            >
-              {item.label}
-            </span>
-          </div>
-        ))}
       </div>
-    </div>
-  </div>
-);
+
+      {/* ✅ Optional Mobile Backdrop */}
+      {mobileOpen && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 bg-black opacity-40 z-30 md:hidden"
+        ></div>
+      )}
+
+      {/* ✅ Sidebar */}
+      <div
+        className={`
+          bg-green-100 text-black border-r shadow-md rounded-md
+          flex flex-col transition-all duration-500 ease-in-out
+          ${collapsed ? 'w-16' : 'w-52'}
+          h-screen overflow-hidden
+          fixed md:relative top-0 left-0
+          ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} 
+          md:translate-x-0 z-40
+        `}
+      >
+        <div className="overflow-y-auto flex-1">
+          <div className="p-2 flex flex-col gap-y-2">
+            {/* ✅ Desktop Collapse Toggle */}
+            <button
+              onClick={() => setCollapsed(!collapsed)}
+              className="mb-2 mt-2 self-start text-xl text-gray-700 hover:text-green-900 transition-transform duration-300 ease-in-out hover:scale-110 hidden md:block"
+              title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+            >
+              <FaBars className={`${collapsed ? 'rotate-180' : 'rotate-0'} transition-transform duration-300`} />
+            </button>
+
+            {/* ✅ Sidebar Menu Items */}
+            {menuItems.map((item, index) => (
+              <div
+                key={index}
+                onClick={() => {
+                  navigate(item.path);
+                  setMobileOpen(false); // ✅ Close on mobile
+                }}
+                className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300
+                hover:bg-green-300 group ${collapsed ? 'justify-center' : ''}`}
+                title={collapsed ? item.label : ''}
+              >
+                <div className="text-lg group-hover:scale-110 transition-transform">{item.icon}</div>
+                <span
+                  className={`whitespace-pre-wrap text-sm transition-opacity duration-300 
+                    ${collapsed ? 'opacity-0 scale-95 w-0 overflow-hidden' : 'opacity-100 scale-100 w-auto'} 
+                    md:whitespace-nowrap`}
+                >
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Sidebar;
