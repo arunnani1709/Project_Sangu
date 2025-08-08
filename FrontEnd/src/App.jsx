@@ -16,7 +16,8 @@ import Home from './Components/Home/Home';
 import AdminBlogPanel from './Components/AdminBlogPanel/AdminBlogPanel'
 import AddPatient from './Components/Patients/AddPatients/AddPatent';
 import PatientList from './Components/Patients/PatientList/Patientlist';
-
+import MedicalCertificate from './Components/MedicalCertificate/MedicalCertificate';
+import CertificateList from './Components/MedicalCertificate/CertificateList';
 
 //import LatestUpdates from './pages/LatestUpdates';
 const AuthSyncWrapper = ({ children }) => {
@@ -46,8 +47,9 @@ function App() {
           <Route path="admin-blog" element={<PrivateRoute><AdminBlogPanel/></PrivateRoute>} />
           <Route path="add-patient" element={<PrivateRoute><AddPatient/></PrivateRoute>} />
           <Route path="patient-list" element={<PrivateRoute><PatientList/></PrivateRoute>} />
+          <Route path="medical-certificate" element={<PrivateRoute><MedicalCertificate/></PrivateRoute>} />
+          <Route path="medical-certificate-list" element={<PrivateRoute><CertificateList/></PrivateRoute>} />
      
-          
         </Route>
       </Routes>
       </AuthSyncWrapper>

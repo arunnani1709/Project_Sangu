@@ -52,7 +52,7 @@ const AdminBlogPanel = () => {
   };
 
   return (
-    <div className="w-full px-4 md:px-10 py-6 max-w-3xl mx-auto">
+    <div className="w-full px-4 md:px-10 py-6 pb-36 sm:pb-24 max-w-3xl mx-auto">
       <div className="bg-white shadow-md rounded-xl p-6 border border-green-100">
         <h2 className="text-2xl font-semibold text-green-700 mb-6 text-center">
           Post a New Blog
@@ -115,64 +115,6 @@ const AdminBlogPanel = () => {
             </button>
           </div>
         </form>
-        <form onSubmit={handleSubmit} className="space-y-5 mb-8">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Blog Title
-            </label>
-            <input
-              type="text"
-              placeholder="Enter blog title"
-              className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-green-300 focus:outline-none"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Blog Content
-            </label>
-            <textarea
-              placeholder="Write your blog content here..."
-              className="w-full border border-gray-300 px-4 py-2 rounded-md resize-none focus:ring-2 focus:ring-green-300 focus:outline-none"
-              rows="6"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Upload Image (optional)
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="block w-full text-sm text-gray-700"
-            />
-            {imagePreview && (
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="mt-3 rounded-md w-full max-h-60 object-cover"
-              />
-            )}
-          </div>
-
-          <div className="text-right">
-            <button
-              type="submit"
-              className="bg-green-600 text-white font-medium px-6 py-2 rounded-md hover:bg-green-700 transition"
-            >
-              Post Blog
-            </button>
-          </div>
-        </form>
-        
         <h3 className="text-xl font-semibold mb-3">Uploaded Blogs</h3>
         {blogs.length === 0 ? (
           <p className="text-gray-500">No blogs uploaded yet.</p>
