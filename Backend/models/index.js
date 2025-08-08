@@ -1,11 +1,11 @@
 import sequelize from "../config/db.js";
 import User from "./User.js";
-
-// Associate models here if needed in the future
+import Patient from "./Patient.js";
 
 const db = {
   sequelize,
   User,
+  Patient,
 };
 
 export default db;
