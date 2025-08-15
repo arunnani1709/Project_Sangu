@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPatients } from "../../../Redux/patientsSlice"; // fixed path
+import { fetchPatients } from "../../../Redux/patientsSlice";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 
 const PatientList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { list: patients, status } = useSelector((state) => state.patients); // ✅ use list
+  const { list: patients, status } = useSelector((state) => state.patients);
 
   const [filteredPatients, setFilteredPatients] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -75,11 +74,8 @@ const PatientList = () => {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredPatients.map((patient) => (
-                  <motion.tr
+                  <tr
                     key={patient.clinicId}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
                     onClick={() => handleRowClick(patient)}
                     className="cursor-pointer hover:bg-green-200 transition"
                   >
@@ -88,7 +84,7 @@ const PatientList = () => {
                     <td className="px-4 py-2">{patient.phone}</td>
                     <td className="px-4 py-2">{patient.address}</td>
                     <td className="px-4 py-2">{patient.visitDate}</td>
-                  </motion.tr>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -100,12 +96,9 @@ const PatientList = () => {
               const isExpanded = expandedId === patient.clinicId;
 
               return (
-                <motion.div
+                <div
                   key={patient.clinicId}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className={`border rounded-md shadow-sm px-4 py-3 transition bg-white ${
+                  className={`border rounded-md shadow-sm px-4 py-3 bg-white ${
                     isExpanded ? "bg-green-100" : ""
                   }`}
                   onClick={() => {
@@ -131,7 +124,7 @@ const PatientList = () => {
                       <div><strong>Visit Date:</strong> {patient.visitDate}</div>
                     </div>
                   )}
-                </motion.div>
+                </div>
               );
             })}
           </div>
