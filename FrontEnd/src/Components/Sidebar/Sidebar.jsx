@@ -29,24 +29,6 @@ const Sidebar = () => {
 
   if (!isAuthenticated) return null;
 
-  const menuItems = [
-    { icon: <FaHome />, label: 'Home', path: '/home' },
-    { icon: <FaUserPlus />, label: 'Add Patient', path: '/add-patient' },
-    { icon: <FaUsers />, label: 'Patient List', path: '/patient-list' },
-    { icon: <FaPills />, label: 'Add Medicine', path: '/add-medicine' },
-    { icon: <FaListAlt />, label: 'Medicine List', path: '/medicine-list' },
-    { icon: <FaFileMedical />, label: 'Medical Certificate', path: '/medical-certificate' },
-    { icon: <FaFileMedicalAlt />, label: 'Medical Certificate List', path: '/medical-certificate-list' },
-  ];
-
-  if (user?.role === 'admin') {
-    menuItems.push({
-      icon: <FaNewspaper />,
-      label: 'Admin Blog Update',
-      path: '/admin-blog',
-    });
-  }
-
   return (
     <>
       {/* ✅ Toggle Button OUTSIDE Sidebar (for mobile open) */}
@@ -63,26 +45,27 @@ const Sidebar = () => {
       )}
 
       {/* ✅ Optional Mobile Backdrop */}
-     {mobileOpen && (
-  <div
-    className="fixed inset-0  opacity-50 md:hidden"
-    onClick={() => setMobileOpen(false)}
-  />
-)}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 opacity-50 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
       {/* ✅ Sidebar */}
-     <div
+      <div
   className={`
-    relative md:relative top-0 left-0 z-10 h-screen
+    relative md:relative top-0 left-0 z-10
     bg-green-100 text-black border-r shadow-md rounded-md
     flex flex-col overflow-hidden transition-all duration-500 ease-in-out
     ${mobileOpen ? (collapsed ? 'w-24' : 'w-52') : 'w-0'}
     ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
     md:w-auto md:translate-x-0
   `}
+  style={{ height: "100%" }} // ✅ match parent container height
 >
-  
-        <div className="overflow-y-auto flex-1  ">
 
+        <div className="overflow-y-auto flex-1">
           {/* ✅ Sidebar Header / Toggle Area */}
           <div className="flex justify-between items-center p-2 mb-2">
             {/* Collapse toggle (desktop) */}
@@ -91,7 +74,11 @@ const Sidebar = () => {
               className="text-xl text-gray-700 hover:text-green-900 transition-transform duration-300 ease-in-out hover:scale-110 hidden md:block"
               title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
             >
-              <FaBars className={`${collapsed ? 'rotate-180' : 'rotate-0'} transition-transform duration-300`} />
+              <FaBars
+                className={`${
+                  collapsed ? 'rotate-180' : 'rotate-0'
+                } transition-transform duration-300`}
+              />
             </button>
 
             {/* Close toggle (mobile) */}
@@ -106,28 +93,127 @@ const Sidebar = () => {
 
           {/* ✅ Menu List */}
           <div className="p-2 flex flex-col gap-y-2">
-            {menuItems.map((item, index) => (
+            {/* Home */}
+            <div
+              onClick={() => {
+                navigate('/home');
+                setMobileOpen(false);
+              }}
+              className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300 hover:bg-green-300 group ${
+                collapsed ? 'justify-center' : ''
+              }`}
+              title={collapsed ? 'Home' : ''}
+            >
+              <FaHome />
+              {!collapsed && <span>Home</span>}
+            </div>
+
+            {/* Add Patient */}
+            <div
+              onClick={() => {
+                navigate('/add-patient');
+                setMobileOpen(false);
+              }}
+              className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300 hover:bg-green-300 group ${
+                collapsed ? 'justify-center' : ''
+              }`}
+              title={collapsed ? 'Add Patient' : ''}
+            >
+              <FaUserPlus />
+              {!collapsed && <span>Add Patient</span>}
+            </div>
+
+            {/* Patient List */}
+            <div
+              onClick={() => {
+                navigate('/patient-list');
+                setMobileOpen(false);
+              }}
+              className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300 hover:bg-green-300 group ${
+                collapsed ? 'justify-center' : ''
+              }`}
+              title={collapsed ? 'Patient List' : ''}
+            >
+              <FaUsers />
+              {!collapsed && <span>Patient List</span>}
+            </div>
+
+            {/* Add Medicine */}
+            <div
+              onClick={() => {
+                navigate('/add-medicine');
+                setMobileOpen(false);
+              }}
+              className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300 hover:bg-green-300 group ${
+                collapsed ? 'justify-center' : ''
+              }`}
+              title={collapsed ? 'Add Medicine' : ''}
+            >
+              <FaPills />
+              {!collapsed && <span>Add Medicine</span>}
+            </div>
+
+            {/* Medicine List */}
+            <div
+              onClick={() => {
+                navigate('/medicine-list');
+                setMobileOpen(false);
+              }}
+              className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300 hover:bg-green-300 group ${
+                collapsed ? 'justify-center' : ''
+              }`}
+              title={collapsed ? 'Medicine List' : ''}
+            >
+              <FaListAlt />
+              {!collapsed && <span>Medicine List</span>}
+            </div>
+
+            {/* Medical Certificate */}
+            <div
+              onClick={() => {
+                navigate('/medical-certificate');
+                setMobileOpen(false);
+              }}
+              className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300 hover:bg-green-300 group ${
+                collapsed ? 'justify-center' : ''
+              }`}
+              title={collapsed ? 'Medical Certificate' : ''}
+            >
+              <FaFileMedical />
+              {!collapsed && <span>Medical Certificate</span>}
+            </div>
+
+            {/* Uploaded Certificates */}
+            <div
+              onClick={() => {
+                navigate('/medical-certificate-list');
+                setMobileOpen(false);
+              }}
+              className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300 hover:bg-green-300 group ${
+                collapsed ? 'justify-center' : ''
+              }`}
+              title={collapsed ? 'Uploaded Certificates' : ''}
+            >
+              <FaFileMedicalAlt />
+              {!collapsed && <span>Uploaded Certificates</span>}
+            </div>
+
+            {/* Admin only */}
+            {user?.role === 'admin' && (
               <div
-                key={index}
                 onClick={() => {
-                  navigate(item.path);
-                  setMobileOpen(false); // close sidebar on mobile after click
+                  navigate('/admin-blog');
+                  setMobileOpen(false);
                 }}
-                className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300 hover:bg-green-300 group ${collapsed ? 'justify-center' : ''}`}
-                title={collapsed ? item.label : ''}
+                className={`flex items-center gap-4 p-2 cursor-pointer rounded transition-all duration-300 hover:bg-green-300 group ${
+                  collapsed ? 'justify-center' : ''
+                }`}
+                title={collapsed ? 'Admin Blog Update' : ''}
               >
-                <div className="text-lg group-hover:scale-110 transition-transform">
-                  {item.icon}
-                </div>
-                <span
-                  className={`whitespace-pre-wrap text-sm transition-opacity duration-300 ${
-                    collapsed ? 'opacity-0 scale-95 w-0 overflow-hidden' : 'opacity-100 scale-100 w-auto'
-                  } md:whitespace-nowrap`}
-                >
-                  {item.label}
-                </span>
+                <FaNewspaper />
+                {!collapsed && <span>Admin Blog Update</span>}
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
