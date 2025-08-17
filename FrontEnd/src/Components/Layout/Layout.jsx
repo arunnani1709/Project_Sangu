@@ -42,7 +42,7 @@ const Layout = () => {
 
         <main
           ref={mainRef}
-          className="flex-1 overflow-y-auto p-4 pb-24 transition-all duration-300 ease-in-out"
+          className="flex-1 overflow-y-auto  transition-all duration-300 ease-in-out"
         >
           <Outlet />
 
