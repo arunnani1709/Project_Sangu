@@ -11,6 +11,7 @@ import {
   FaFileMedical,
   FaFileMedicalAlt,
   FaNewspaper,
+  FaEyeDropper,
 } from 'react-icons/fa';
 
 const Sidebar = () => {
@@ -214,6 +215,19 @@ const Sidebar = () => {
                 {!collapsed && <span>Admin Blog Update</span>}
               </div>
             )}
+             <div
+              onClick={() => {
+                navigate('/swarna-parasana');
+                setMobileOpen(false);
+              }}
+              className={`flex items-center  gap-4 p-2 bg-green-300 cursor-pointer rounded transition-all duration-300 hover:bg-green-700 group ${
+                collapsed ? 'justify-center' : ''
+              }`}
+              title={collapsed ? 'Swarna Pprachana' : ''}
+            >
+              <FaEyeDropper />
+              {!collapsed && <span>Swarna Pprachana</span>}
+            </div>
           </div>
         </div>
       </div>

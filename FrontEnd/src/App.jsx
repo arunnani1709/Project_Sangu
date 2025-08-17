@@ -20,6 +20,8 @@ import MedicalCertificate from './Components/MedicalCertificate/MedicalCertifica
 import CertificateList from './Components/MedicalCertificate/CertificateList';
 import AddMedicine from './Components/Medicin/AddMedicine/AddMedicine';
 import MedicineList from './Components/Medicin/MedicineList/MedicineList';
+import Swarnaprashana from './Components/Patients/Swarnaprashana/SwarnaPrasana';
+import SwarnaprashanaPatientDetails from './Components/Patients/Swarnaprashana/SwarnaprashanaPatientDetails';
 
 //import LatestUpdates from './pages/LatestUpdates';
 const AuthSyncWrapper = ({ children }) => {
@@ -53,6 +55,9 @@ function App() {
           <Route path="medical-certificate-list" element={<PrivateRoute><CertificateList/></PrivateRoute>} />
           <Route path="add-medicine" element={<PrivateRoute><AddMedicine/></PrivateRoute>} />
           <Route path="medicine-list" element={<PrivateRoute><MedicineList/></PrivateRoute>} />
+          <Route path="swarna-parasana" element={<PrivateRoute><Swarnaprashana/></PrivateRoute>} />
+          <Route path="/patient/:id" element={<PrivateRoute><SwarnaprashanaPatientDetails/></PrivateRoute>} />
+
      
         </Route>
       </Routes>
