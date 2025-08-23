@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
 import db from "./models/index.js";
 import patientRoutes from "./routes/patientRoutes.js";
+import medicineRoutes from "./routes/medicineRoutes.js";
 
 dotenv.config();
 
@@ -15,6 +16,10 @@ app.use(express.json());
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/patients", patientRoutes);
+app.use("/api/medicines", medicineRoutes);
+
+import path from "path";
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Sync DB
 db.sequelize
