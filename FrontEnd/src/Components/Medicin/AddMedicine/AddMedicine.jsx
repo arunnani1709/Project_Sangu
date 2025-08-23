@@ -73,7 +73,8 @@ const AddMedicine = () => {
     }
   };
 
-  const filteredSuggestions = medicine.name
+  const filteredSuggestions =
+  medicine.name && Array.isArray(medicinesList)
     ? medicinesList.filter((m) =>
         m.name.toLowerCase().includes(medicine.name.toLowerCase())
       )
