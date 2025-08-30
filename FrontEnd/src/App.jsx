@@ -20,6 +20,7 @@ import MedicalCertificate from './Components/MedicalCertificate/MedicalCertifica
 import CertificateList from './Components/MedicalCertificate/CertificateList';
 import AddMedicine from './Components/Medicin/AddMedicine/AddMedicine';
 import MedicineList from './Components/Medicin/MedicineList/MedicineList';
+import ResetPassword from './Components/Reset password/ResetPassword';
 import Swarnaprashana from './Components/Patients/Swarnaprashana/SwarnaPrasana';
 import SwarnaprashanaPatientDetails from './Components/Patients/Swarnaprashana/SwarnaprashanaPatientDetails';
 
@@ -46,6 +47,7 @@ function App() {
           <Route path="contact" element={<ContactUs/>} />
           <Route path="about-us" element={<AboutUs/>} />
           <Route path="hospital" element={<Hospital/>} />
+          <Route path="reset-password" element={<ResetPassword/>} />
           <Route path="latest-updates" element={<Latestupdates/>} />
           <Route path="home" element={<PrivateRoute><Home/></PrivateRoute>} />
           <Route path="admin-blog" element={<PrivateRoute><AdminBlogPanel/></PrivateRoute>} />
@@ -57,10 +59,7 @@ function App() {
           <Route path="medicine-list" element={<PrivateRoute><MedicineList/></PrivateRoute>} />
           <Route path="swarna-parasana" element={<PrivateRoute><Swarnaprashana/></PrivateRoute>} />
           <Route path="/patient/:id" element={<PrivateRoute><SwarnaprashanaPatientDetails/></PrivateRoute>} />
-          <Route path="/patient/:clinicId/:patientId" element={<PrivateRoute><SwarnaprashanaPatientDetails /></PrivateRoute>}
-/>
-
-     
+          <Route path="/patient/:clinicId/:patientId" element={<PrivateRoute><SwarnaprashanaPatientDetails /></PrivateRoute>}/>
         </Route>
       </Routes>
       </AuthSyncWrapper>

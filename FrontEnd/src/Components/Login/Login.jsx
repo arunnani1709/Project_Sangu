@@ -39,21 +39,23 @@ const Login = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center" style={{ height: 'calc(100vh - 79px)' }}>
-  {/* Background Image */}
-  <div
-    className="absolute inset-0 bg-cover bg-center z-0 opacity-90"
-    style={{
-      backgroundImage: `url(${Coverlogo})`,
-    }}
-  ></div>
-
+    <div
+      className="relative flex items-center justify-center"
+      style={{ height: "calc(100vh - 79px)" }}
+    >
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center z-0 opacity-90"
+        style={{
+          backgroundImage: `url(${Coverlogo})`,
+        }}
+      ></div>
 
       {/* Login Form */}
       <div className="relative z-10 w-full max-w-md bg-white bg-opacity-90 shadow-xl rounded-xl p-8">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-blue-700">
-            Dr. Patil's Navajeevana Chikitsalaya
+            Dr. Patil's Navajeevana Chikitsakendra
           </h1>
         </div>
         <form onSubmit={handleLogin} className="space-y-5">
@@ -88,6 +90,16 @@ const Login = () => {
             Login
           </button>
         </form>
+
+        {/* Reset Password Link */}
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => navigate("/reset-password")}
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Forgot your password?
+          </button>
+        </div>
       </div>
 
       <ToastContainer position="top-center" autoClose={2000} />
