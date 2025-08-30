@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SwarnaprashanaPatientDetails = () => {
   const [doctorNotes, setDoctorNotes] = useState([]);
@@ -8,10 +10,8 @@ const SwarnaprashanaPatientDetails = () => {
   const [noteDate, setNoteDate] = useState("");
   const navigate = useNavigate();
 
-  // ✅ get params from router
   const { clinicId, patientId } = useParams();
 
-  // ✅ Fetch notes for this patient
   useEffect(() => {
     if (!patientId) return;
 
@@ -42,6 +42,7 @@ const SwarnaprashanaPatientDetails = () => {
         setDoctorNotes(enriched);
       } catch (err) {
         console.error("Error fetching notes:", err.response?.data || err);
+        toast.error("Failed to fetch notes ❌");
       }
     };
 
@@ -49,7 +50,10 @@ const SwarnaprashanaPatientDetails = () => {
   }, [patientId]);
 
   const handleAddNote = () => {
-    if (!noteDate) return alert("Please enter a date before adding a note.");
+    if (!noteDate) {
+      toast.warn("Please enter a date before adding a note ⚠️");
+      return;
+    }
     const newNote = {
       id: Date.now(),
       dbId: null,
@@ -80,21 +84,19 @@ const SwarnaprashanaPatientDetails = () => {
         clinicId,
         patientId,
       });
-      alert("Cannot save note: patientId missing ❌");
+      toast.error("Cannot save note: patientId missing ❌");
       return;
     }
 
     try {
       let savedNote;
       if (noteToSave.dbId) {
-        // update existing note
         savedNote = await axios.put(`/api/notes/${noteToSave.dbId}`, {
           clinicId,
           patientId,
           ...noteToSave,
         });
       } else {
-        // create new note
         savedNote = await axios.post(`/api/notes`, {
           clinicId,
           patientId,
@@ -114,10 +116,10 @@ const SwarnaprashanaPatientDetails = () => {
             : n
         )
       );
-      alert("Note saved successfully ✅");
+      toast.success("Note saved successfully ✅");
     } catch (err) {
       console.error("Error while saving note:", err.response?.data || err);
-      alert("Error saving note ❌");
+      toast.error("Error saving note ❌");
     }
   };
 
@@ -127,6 +129,9 @@ const SwarnaprashanaPatientDetails = () => {
 
   return (
     <div className="mt-12 px-6">
+      {/* Toast container */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}

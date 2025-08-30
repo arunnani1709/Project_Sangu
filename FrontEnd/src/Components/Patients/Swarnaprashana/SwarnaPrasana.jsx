@@ -14,7 +14,6 @@ const Swarnaprashana = () => {
   const [patients, setPatients] = useState([]);
   const [success, setSuccess] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchActive, setSearchActive] = useState(false);
   const navigate = useNavigate();
 
   // Fetch all patients initially
@@ -56,22 +55,21 @@ const Swarnaprashana = () => {
     }
   };
 
-  const handleSearch = async () => {
-    if (!searchTerm.trim()) {
-      setSearchActive(false);
-      return;
-    }
-    try {
-      const res = await axios.get(
-        `/api/swarnaprashana/patients/search?query=${searchTerm}`
-      );
-      setPatients(res.data);
-      setSearchActive(true);
-    } catch (err) {
-      console.error(err);
-      alert("Error searching patients ❌");
-    }
-  };
+  // Filter patients in real time
+  // Filter patients in real time and sort by numeric uniqueId
+const filteredPatients = patients
+  .filter((p) =>
+    [p.name, p.phone, p.uniqueId]
+      .join(" ")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  )
+  .sort((a, b) => {
+    const numA = parseInt(a.uniqueId.replace(/\D/g, ""), 10); // extract digits
+    const numB = parseInt(b.uniqueId.replace(/\D/g, ""), 10);
+    return numA - numB; // ascending order
+  });
+
 
   return (
     <div className="flex-1 flex flex-col items-center p-4 sm:p-10 bg-gray-50 min-h-screen pb-24">
@@ -209,25 +207,17 @@ const Swarnaprashana = () => {
         <h3 className="text-md font-semibold text-gray-800 mb-3">
           Search Patient
         </h3>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Search by Name, Phone, or ID"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-          <button
-            onClick={handleSearch}
-            className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded"
-          >
-            Search
-          </button>
-        </div>
+        <input
+          type="text"
+          placeholder="Search by Name, Phone, or ID"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
       </div>
 
       {/* Patients List */}
-      {patients.length > 0 && (
+      {filteredPatients.length > 0 && (
         <div className="w-full max-w-5xl mt-8 bg-white p-6 rounded-md shadow border border-gray-200 overflow-x-auto">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
             Patients List
@@ -245,10 +235,12 @@ const Swarnaprashana = () => {
               </tr>
             </thead>
             <tbody>
-              {patients.map((p, idx) => (
+              {filteredPatients.map((p, idx) => (
                 <tr
                   key={idx}
-                  onClick={() => navigate(`/patient/${p.clinicId}/${p.uniqueId}`, { state: p })}
+                  onClick={() =>
+                    navigate(`/patient/${p.clinicId}/${p.uniqueId}`, { state: p })
+                  }
                   className="hover:bg-gray-50 cursor-pointer"
                 >
                   <td className="border p-2 font-semibold text-green-600">
@@ -268,7 +260,7 @@ const Swarnaprashana = () => {
       )}
 
       {/* No results */}
-      {searchActive && patients.length === 0 && (
+      {searchTerm && filteredPatients.length === 0 && (
         <div className="w-full max-w-xl mt-8 text-center text-red-500 font-medium">
           No patients found.
         </div>
