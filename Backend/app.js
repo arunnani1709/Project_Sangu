@@ -5,6 +5,8 @@ import userRoutes from "./routes/userRoutes.js";
 import db from "./models/index.js";
 import patientRoutes from "./routes/patientRoutes.js";
 import medicineRoutes from "./routes/medicineRoutes.js";
+import swarnaprashanaPatientRoutes from "./routes/swarnaprashanaPatientRoutes.js";
+import swarnaprashanaNoteRoutes from "./routes/swarnaprashanaNoteRoutes.js";
 
 dotenv.config();
 
@@ -17,6 +19,8 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/medicines", medicineRoutes);
+app.use("/api/swarnaprashana/patients", swarnaprashanaPatientRoutes);
+app.use("/api/notes", swarnaprashanaNoteRoutes);
 
 import path from "path";
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));

@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-const SwarnaprashanaPatientDetails = ({ clinicId }) => {
+const SwarnaprashanaPatientDetails = () => {
   const [doctorNotes, setDoctorNotes] = useState([]);
   const [openNoteId, setOpenNoteId] = useState(null);
   const [noteDate, setNoteDate] = useState("");
   const navigate = useNavigate();
 
+  // ✅ get params from router
+  const { clinicId, patientId } = useParams();
+
+  // ✅ Fetch notes for this patient
   useEffect(() => {
-    if (!clinicId) return;
-    axios
-      .get(`/api/notes/clinic/${clinicId}`)
-      .then((res) => {
+    if (!patientId) return;
+
+    const fetchNotes = async () => {
+      try {
+        const res = await axios.get(`/api/notes/patient/${patientId}`);
         const sorted = res.data.sort(
           (a, b) => new Date(b.visitDate) - new Date(a.visitDate)
         );
+
         const enriched = sorted.map((note, idx, arr) => {
           let daysSinceLastVisit = null;
           if (idx < arr.length - 1) {
@@ -34,9 +40,13 @@ const SwarnaprashanaPatientDetails = ({ clinicId }) => {
           };
         });
         setDoctorNotes(enriched);
-      })
-      .catch(console.error);
-  }, [clinicId]);
+      } catch (err) {
+        console.error("Error fetching notes:", err.response?.data || err);
+      }
+    };
+
+    fetchNotes();
+  }, [patientId]);
 
   const handleAddNote = () => {
     if (!noteDate) return alert("Please enter a date before adding a note.");
@@ -65,15 +75,29 @@ const SwarnaprashanaPatientDetails = ({ clinicId }) => {
     const noteToSave = doctorNotes.find((n) => n.id === id);
     if (!noteToSave) return;
 
+    if (!patientId) {
+      console.error("Cannot save note: patientId is missing ❌", {
+        clinicId,
+        patientId,
+      });
+      alert("Cannot save note: patientId missing ❌");
+      return;
+    }
+
     try {
       let savedNote;
       if (noteToSave.dbId) {
-        // update existing
-        savedNote = await axios.put(`/api/notes/${noteToSave.dbId}`, noteToSave);
+        // update existing note
+        savedNote = await axios.put(`/api/notes/${noteToSave.dbId}`, {
+          clinicId,
+          patientId,
+          ...noteToSave,
+        });
       } else {
-        // create new
+        // create new note
         savedNote = await axios.post(`/api/notes`, {
           clinicId,
+          patientId,
           ...noteToSave,
         });
       }
@@ -81,13 +105,18 @@ const SwarnaprashanaPatientDetails = ({ clinicId }) => {
       setDoctorNotes((prev) =>
         prev.map((n) =>
           n.id === id
-            ? { ...savedNote.data, id: n.id, dbId: savedNote.data.id, saved: true }
+            ? {
+                ...savedNote.data,
+                id: n.id,
+                dbId: savedNote.data.id,
+                saved: true,
+              }
             : n
         )
       );
       alert("Note saved successfully ✅");
     } catch (err) {
-      console.error(err);
+      console.error("Error while saving note:", err.response?.data || err);
       alert("Error saving note ❌");
     }
   };
@@ -134,7 +163,7 @@ const SwarnaprashanaPatientDetails = ({ clinicId }) => {
         <div key={note.id} className="mb-6 border rounded-lg shadow bg-white">
           <div className="p-2 border-b flex items-center justify-between">
             <p className="font-semibold text-green-700">
-              Doctor's Note - {note.visitDate}
+              Doctor&apos;s Note - {note.visitDate}
             </p>
             {note.daysSinceLastVisit !== null && (
               <p className="text-sm text-gray-600">
