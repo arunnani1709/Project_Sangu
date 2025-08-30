@@ -57,6 +57,8 @@ function App() {
           <Route path="medicine-list" element={<PrivateRoute><MedicineList/></PrivateRoute>} />
           <Route path="swarna-parasana" element={<PrivateRoute><Swarnaprashana/></PrivateRoute>} />
           <Route path="/patient/:id" element={<PrivateRoute><SwarnaprashanaPatientDetails/></PrivateRoute>} />
+          <Route path="/patient/:clinicId/:patientId" element={<PrivateRoute><SwarnaprashanaPatientDetails /></PrivateRoute>}
+/>
 
      
         </Route>

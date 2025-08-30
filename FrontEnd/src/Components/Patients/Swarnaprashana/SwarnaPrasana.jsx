@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Swarnaprashana = () => {
   const [formData, setFormData] = useState({
@@ -10,81 +11,67 @@ const Swarnaprashana = () => {
     address: "",
     visitDate: "",
   });
-  const navigate = useNavigate();
-
-  const [patients, setPatients] = useState([
-    {
-      uniqueId: "NJSP0001",
-      name: "Rahul",
-      phone: "9876543210",
-      age: 5,
-      sex: "Male",
-      address: "Bangalore",
-      visitDate: "2025-08-01",
-    },
-    {
-      uniqueId: "NJSP0002",
-      name: "Ananya",
-      phone: "9123456780",
-      age: 7,
-      sex: "Female",
-      address: "Mysore",
-      visitDate: "2025-08-10",
-    },
-  ]);
-
+  const [patients, setPatients] = useState([]);
   const [success, setSuccess] = useState(false);
-  const [lastId, setLastId] = useState(2);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchActive, setSearchActive] = useState(false);
+  const navigate = useNavigate();
+
+  // Fetch all patients initially
+  useEffect(() => {
+    axios
+      .get("/api/swarnaprashana/patients")
+      .then((res) => setPatients(res.data))
+      .catch((err) => console.error("Error fetching patients", err));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const generateUniqueId = () => {
-    const newId = lastId + 1;
-    setLastId(newId);
-    return `NJSP${String(newId).padStart(4, "0")}`;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.sex) {
       alert("Please select the patient's sex.");
       return;
     }
 
-    const uniqueId = generateUniqueId();
-
-    const newPatient = {
-      ...formData,
-      uniqueId,
-    };
-
-    setPatients((prev) => [...prev, newPatient]);
-    setFormData({
-      name: "",
-      phone: "",
-      age: "",
-      sex: "",
-      address: "",
-      visitDate: "",
-    });
-
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 2000);
+    try {
+      const res = await axios.post("/api/swarnaprashana/patients", formData);
+      setPatients((prev) => [res.data, ...prev]);
+      setFormData({
+        name: "",
+        phone: "",
+        age: "",
+        sex: "",
+        address: "",
+        visitDate: "",
+      });
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 2000);
+    } catch (err) {
+      console.error(err);
+      alert("Error adding patient ❌");
+    }
   };
 
-  // Filter patients based on search
-  const filteredPatients = searchActive
-    ? patients.filter((p) =>
-        [p.name, p.phone, p.uniqueId].some((field) =>
-          field.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      )
-    : patients;
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) {
+      setSearchActive(false);
+      return;
+    }
+    try {
+      const res = await axios.get(
+        `/api/swarnaprashana/patients/search?query=${searchTerm}`
+      );
+      setPatients(res.data);
+      setSearchActive(true);
+    } catch (err) {
+      console.error(err);
+      alert("Error searching patients ❌");
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col items-center p-4 sm:p-10 bg-gray-50 min-h-screen pb-24">
@@ -116,7 +103,7 @@ const Swarnaprashana = () => {
             />
           </div>
 
-          {/* Phone Number */}
+          {/* Phone */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Phone Number
@@ -133,7 +120,7 @@ const Swarnaprashana = () => {
             />
           </div>
 
-          {/* Age and Sex */}
+          {/* Age + Sex */}
           <div className="flex flex-col sm:flex-row gap-6">
             <div className="w-full sm:w-1/2">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -205,7 +192,7 @@ const Swarnaprashana = () => {
             />
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <div className="pt-4">
             <button
               type="submit"
@@ -231,7 +218,7 @@ const Swarnaprashana = () => {
             className="flex-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <button
-            onClick={() => setSearchActive(true)}
+            onClick={handleSearch}
             className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded"
           >
             Search
@@ -239,8 +226,8 @@ const Swarnaprashana = () => {
         </div>
       </div>
 
-      {/* Patients List Table */}
-      {filteredPatients.length > 0 && (
+      {/* Patients List */}
+      {patients.length > 0 && (
         <div className="w-full max-w-5xl mt-8 bg-white p-6 rounded-md shadow border border-gray-200 overflow-x-auto">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
             Patients List
@@ -258,12 +245,10 @@ const Swarnaprashana = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredPatients.map((p, idx) => (
+              {patients.map((p, idx) => (
                 <tr
                   key={idx}
-                  onClick={() =>
-                    navigate(`/patient/${p.uniqueId}`, { state: p })
-                  }
+                  onClick={() => navigate(`/patient/${p.clinicId}/${p.uniqueId}`, { state: p })}
                   className="hover:bg-gray-50 cursor-pointer"
                 >
                   <td className="border p-2 font-semibold text-green-600">
@@ -282,8 +267,8 @@ const Swarnaprashana = () => {
         </div>
       )}
 
-      {/* No results found */}
-      {searchActive && filteredPatients.length === 0 && (
+      {/* No results */}
+      {searchActive && patients.length === 0 && (
         <div className="w-full max-w-xl mt-8 text-center text-red-500 font-medium">
           No patients found.
         </div>
