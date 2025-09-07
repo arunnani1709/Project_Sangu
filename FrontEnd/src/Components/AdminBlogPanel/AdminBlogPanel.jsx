@@ -7,6 +7,7 @@ const AdminBlogPanel = () => {
   const [content, setContent] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [blogs, setBlogs] = useState([]);
+  const [selectedBlogId, setSelectedBlogId] = useState(null); // NEW: to track which blog is viewed
 
   useEffect(() => {
     const storedBlogs = JSON.parse(localStorage.getItem("blogs") || "[]");
@@ -49,6 +50,11 @@ const AdminBlogPanel = () => {
     localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
     setBlogs(updatedBlogs);
     toast.info("Blog deleted");
+
+    // Deselect blog if deleted
+    if (selectedBlogId === id) {
+      setSelectedBlogId(null);
+    }
   };
 
   return (
@@ -115,7 +121,9 @@ const AdminBlogPanel = () => {
             </button>
           </div>
         </form>
+
         <h3 className="text-xl font-semibold mb-3">Uploaded Blogs</h3>
+
         {blogs.length === 0 ? (
           <p className="text-gray-500">No blogs uploaded yet.</p>
         ) : (
@@ -127,14 +135,14 @@ const AdminBlogPanel = () => {
               >
                 <span className="font-medium text-green-700">{title}</span>
                 <div className="space-x-2">
-                  <a
-                    href={`/blog/${id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() =>
+                      setSelectedBlogId(selectedBlogId === id ? null : id)
+                    }
                     className="text-blue-600 hover:underline"
                   >
-                    View
-                  </a>
+                    {selectedBlogId === id ? "Hide" : "View"}
+                  </button>
                   <button
                     onClick={() => handleDelete(id)}
                     className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 text-sm"
@@ -146,6 +154,37 @@ const AdminBlogPanel = () => {
               </li>
             ))}
           </ul>
+        )}
+
+        {/* Show selected blog content below the list */}
+        {selectedBlogId && (
+          <div className="mt-6 p-4 border rounded-md bg-gray-50 shadow">
+            {(() => {
+              const blog = blogs.find((b) => b.id === selectedBlogId);
+              if (!blog) return null;
+
+              return (
+                <>
+                  <h4 className="text-xl font-semibold text-green-800 mb-2">
+                    {blog.title}
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-2">
+                    Posted on: {blog.date}
+                  </p>
+                  {blog.image && (
+                    <img
+                      src={blog.image}
+                      alt="Blog"
+                      className="w-full max-h-80 object-cover rounded my-4"
+                    />
+                  )}
+                  <p className="text-gray-800 whitespace-pre-line">
+                    {blog.content}
+                  </p>
+                </>
+              );
+            })()}
+          </div>
         )}
       </div>
     </div>
