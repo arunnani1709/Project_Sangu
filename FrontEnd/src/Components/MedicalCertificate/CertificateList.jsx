@@ -1,35 +1,23 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const CertificateList = () => {
   const [certificates, setCertificates] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Dummy data for testing without backend
-    const dummyCertificates = [
-      {
-        id: 1,
-        filename: "React_Developer_Certificate.pdf",
-        uploadTime: new Date("2025-08-01T10:30:00"),
-        url: "/certificates/React_Developer_Certificate.pdf"
-      },
-      {
-        id: 2,
-        filename: "NodeJS_Backend_Certificate.pdf",
-        uploadTime: new Date("2025-08-05T15:45:00"),
-        url: "/certificates/NodeJS_Backend_Certificate.pdf"
-      },
-      {
-        id: 3,
-        filename: "Fullstack_Engineering_Certificate.pdf",
-        uploadTime: new Date("2025-08-10T09:15:00"),
-        url: "/certificates/Fullstack_Engineering_Certificate.pdf"
+    const fetchCertificates = async () => {
+      try {
+        const res = await axios.get("/api/certificates");
+        setCertificates(res.data);
+      } catch (error) {
+        console.error("Failed to fetch certificates:", error);
+      } finally {
+        setLoading(false);
       }
-    ];
+    };
 
-    // Simulate API delay
-    setTimeout(() => {
-      setCertificates(dummyCertificates);
-    }, 500);
+    fetchCertificates();
   }, []);
 
   return (
@@ -38,7 +26,9 @@ const CertificateList = () => {
         Uploaded Certificates
       </h2>
 
-      {certificates.length === 0 ? (
+      {loading ? (
+        <p className="text-gray-500 text-center">Loading...</p>
+      ) : certificates.length === 0 ? (
         <p className="text-gray-600 text-center">
           No certificates uploaded yet.
         </p>
@@ -55,7 +45,7 @@ const CertificateList = () => {
             </thead>
             <tbody>
               {certificates.map((cert, index) => (
-                <tr key={cert.id || index}>
+                <tr key={cert.id}>
                   <td className="border px-4 py-2">{index + 1}</td>
                   <td className="border px-4 py-2">{cert.filename}</td>
                   <td className="border px-4 py-2">
