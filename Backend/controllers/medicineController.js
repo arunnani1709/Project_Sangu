@@ -19,7 +19,7 @@ export const addMedicine = async (req, res) => {
   try {
     const { name, code, type, quantity } = req.body;
 
-    if (!name || !code || !type || !quantity) {
+    if (!name || !code || !type || quantity === undefined || quantity === null) {
       return res.status(400).json({ error: "All fields are required" });
     }
 

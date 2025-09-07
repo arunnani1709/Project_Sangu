@@ -8,7 +8,7 @@ const Footer = () => {
           &copy; {new Date().getFullYear()} Navajeevana Chikitsa Kendra. All rights reserved. Developed by AS WebTechnologies
         </p>
         <p className="text-sm">
-          Contact: +91 95352 61996 | Email: Sangu@gmail.com
+          Contact: +91 95352 61996 | Email: healthyayurveda.patil@gmail.com
         </p>
       </div>
     </footer>

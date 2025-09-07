@@ -2,19 +2,35 @@ import React, { useState } from "react";
 
 const ResetPassword = () => {
   const [step, setStep] = useState(1);
+  const [role, setRole] = useState(""); // ✅ added role
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
   const handleSendOtp = () => {
-    console.log("Send OTP to:", email);
+    if (!role) {
+      alert("⚠️ Please select a role before proceeding.");
+      return;
+    }
+    if (!email) {
+      alert("⚠️ Please enter an email.");
+      return;
+    }
+
+    console.log("Send OTP to:", email, "for role:", role);
+    // 👉 Call your backend like:
+    // axios.post("/api/send-otp", { role, email })
     setStep(2);
   };
 
   const handleResetPassword = () => {
-    console.log("Reset password for:", email, "OTP:", otp, "New Password:", newPassword);
-    alert("Password reset successful (dummy)");
+    console.log("Reset password for:", role, email, "OTP:", otp, "New Password:", newPassword);
+    // 👉 Call backend:
+    // axios.post("/api/reset-password", { role, email, otp, newPassword })
+
+    alert(`✅ Password reset successful for ${role} (dummy)`);
     setStep(1);
+    setRole("");
     setEmail("");
     setOtp("");
     setNewPassword("");
@@ -29,6 +45,21 @@ const ResetPassword = () => {
 
         {step === 1 && (
           <>
+            {/* ✅ Role Dropdown */}
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Select Role
+            </label>
+            <select
+              className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="">-- Select Role --</option>
+              <option value="Admin">Admin</option>
+              <option value="Doctor">Doctor</option>
+            </select>
+
+            {/* Email Field */}
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Email Address
             </label>
@@ -39,6 +70,7 @@ const ResetPassword = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+
             <button
               onClick={handleSendOtp}
               className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-medium"
@@ -50,6 +82,7 @@ const ResetPassword = () => {
 
         {step === 2 && (
           <>
+            {/* OTP */}
             <label className="block mb-2 text-sm font-medium text-gray-700">
               OTP
             </label>
@@ -61,6 +94,7 @@ const ResetPassword = () => {
               onChange={(e) => setOtp(e.target.value)}
             />
 
+            {/* New Password */}
             <label className="block mb-2 text-sm font-medium text-gray-700">
               New Password
             </label>
@@ -84,7 +118,7 @@ const ResetPassword = () => {
         <div className="mt-4 text-center">
           <button
             onClick={() => window.history.back()}
-            className="text-sm text-gray-600 text-green hover:underline"
+            className="text-sm text-gray-600 hover:text-green-600 hover:underline"
           >
             Back to Login
           </button>

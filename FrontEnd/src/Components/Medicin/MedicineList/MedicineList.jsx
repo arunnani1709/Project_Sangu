@@ -4,21 +4,28 @@ import axios from "axios";
 const lowStockThresholds = {
   Tablet: 100,
   Kashaya: 5,
+  Asava: 5,
+  Arista: 5,
   Ghrita: 2,
   Taila: 2,
   Leha: 2,
   Capsule: 40,
   Linements: 5,
   Powder: 100,
+  Basma: 100,
   NasalDrop: 5,
   Soap: 5,
   Paste: 2,
   Shampoo: 5,
+  Vati: 25,
 };
 
 const unitLabels = {
   Tablet: "No",
+  Asava:  "No",
+  Arista:  "No",
   Powder: "grams",
+  Basma: "grams",
   Kashaya: "No",
   Ghrita: "No",
   Taila: "No",
@@ -29,6 +36,7 @@ const unitLabels = {
   Soap: "No",
   Paste: "No",
   Shampoo: "No",
+  Vati: "No",
 };
 
 const MedicineList = () => {
