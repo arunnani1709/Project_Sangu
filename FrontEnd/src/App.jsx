@@ -57,9 +57,8 @@ function App() {
           <Route path="medical-certificate-list" element={<PrivateRoute><CertificateList/></PrivateRoute>} />
           <Route path="add-medicine" element={<PrivateRoute><AddMedicine/></PrivateRoute>} />
           <Route path="medicine-list" element={<PrivateRoute><MedicineList/></PrivateRoute>} />
-          <Route path="swarna-parasana" element={<PrivateRoute><Swarnaprashana/></PrivateRoute>} />
-          <Route path="/patient/:id" element={<PrivateRoute><SwarnaprashanaPatientDetails/></PrivateRoute>} />
-          <Route path="/patient/:clinicId/:patientId" element={<PrivateRoute><SwarnaprashanaPatientDetails /></PrivateRoute>}/>
+          <Route path="swarna-parasana" element={<Swarnaprashana/>} />
+          <Route path="/patient/:clinicId/:patientId" element={<SwarnaprashanaPatientDetails />}/>
         </Route>
       </Routes>
       </AuthSyncWrapper>

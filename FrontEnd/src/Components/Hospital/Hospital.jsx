@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useInView } from "react-intersection-observer";
-
 import {
   FaBed, FaHeartbeat, FaHandHoldingMedical, FaSpa, FaCapsules, FaProcedures,
   FaHandsHelping, FaSyringe, FaDumbbell, FaHotjar, FaWalking, FaUserMd, FaDna
@@ -30,7 +29,7 @@ import GreevaBastiImg from "../Photos/Treatement/GreevaBastiImg.jpg";
 import ShiroBastiImg from "../Photos/Treatement/ShiroBastiImg.jpg";
 import UdvarthanaImg from "../Photos/Treatement/UdvarthanaImg.jpg";
 import ShastikaShaliPindaSwedaImg from "../Photos/Treatement/ShastikaShaliPindaSwedaImg.jpg";
-import BashpaswedaImg from "../Photos/Treatement/BashpaswedaImg.jpg"; // 🛠 Note the correct file name is BashpaswedalImg.jpg
+import BashpaswedaImg from "../Photos/Treatement/BashpaswedaImg.jpg"; 
 import LeechTherapyImg from "../Photos/Treatement/LeechTherapyImg.jpg";
 import NadiParikshaImg from "../Photos/Treatement/NadiParikshaImg.jpg";
 import PhysiotherapyImg from "../Photos/Treatement/PhysiotherapyImg.jpg";
@@ -39,7 +38,6 @@ import LifestyleDietImg from "../Photos/Treatement/LifestyleDietImg.jpg";
 import YogaMeditationImg from "../Photos/Treatement/YogaMeditationImg.jpg";
 import asyaKarmaImg from "../Photos/Treatement/asyaKarmaImg.jpg";
 // import NasyaKarmaImg from "../Photos/Treatement/NasyaKarmaImg.jpg";
-
 
 
 // Animated Card Component
@@ -185,7 +183,7 @@ const Hospital = () => {
 
           {/* Physiotherapy Facilities */}
           <div className="bg-white backdrop-blur-sm p-6 rounded-xl max-w-7xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">Our Physiotherapy Facilities</h2>
+            <h2 className="text-4xl font-bold text-center text-gray-800 mb-12"> Physiotherapy Facilities</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {physiotherapyFacilities.map((facility, index) => (
                 <AnimatedCard key={index} index={index}>
