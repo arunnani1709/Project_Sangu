@@ -10,7 +10,7 @@ const SwarnaprashanaPatientDetails = () => {
   const [noteDate, setNoteDate] = useState("");
   const navigate = useNavigate();
 
-  const { clinicId, patientId } = useParams();
+  const { patientId } = useParams();
 
   useEffect(() => {
     if (!patientId) return;
@@ -81,7 +81,7 @@ const SwarnaprashanaPatientDetails = () => {
 
     if (!patientId) {
       console.error("Cannot save note: patientId is missing ❌", {
-        clinicId,
+      
         patientId,
       });
       toast.error("Cannot save note: patientId missing ❌");
@@ -92,13 +92,12 @@ const SwarnaprashanaPatientDetails = () => {
       let savedNote;
       if (noteToSave.dbId) {
         savedNote = await axios.put(`/api/notes/${noteToSave.dbId}`, {
-          clinicId,
           patientId,
           ...noteToSave,
         });
       } else {
         savedNote = await axios.post(`/api/notes`, {
-          clinicId,
+
           patientId,
           ...noteToSave,
         });

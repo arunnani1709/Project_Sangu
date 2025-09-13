@@ -58,7 +58,7 @@ function App() {
           <Route path="add-medicine" element={<PrivateRoute><AddMedicine/></PrivateRoute>} />
           <Route path="medicine-list" element={<PrivateRoute><MedicineList/></PrivateRoute>} />
           <Route path="swarna-parasana" element={<Swarnaprashana/>} />
-          <Route path="/patient/:clinicId/:patientId" element={<SwarnaprashanaPatientDetails />}/>
+          <Route path="/patient/:patientId" element={<SwarnaprashanaPatientDetails />}/>
         </Route>
       </Routes>
       </AuthSyncWrapper>

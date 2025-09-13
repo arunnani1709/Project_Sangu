@@ -7,7 +7,6 @@ const SwarnaprashanaPatient = sequelize.define("SwarnaprashanaPatient", {
     autoIncrement: true,
     primaryKey: true,
   },
-  clinicId: { type: DataTypes.STRING, allowNull: true },
   uniqueId: { type: DataTypes.STRING, unique: true, allowNull: false },
   name: { type: DataTypes.STRING, allowNull: false },
   phone: { type: DataTypes.STRING, allowNull: false },
