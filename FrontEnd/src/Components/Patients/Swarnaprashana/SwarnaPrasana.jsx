@@ -239,7 +239,7 @@ const filteredPatients = patients
                 <tr
                   key={idx}
                   onClick={() =>
-                    navigate(`/patient/${p.clinicId}/${p.uniqueId}`, { state: p })
+                    navigate(`/patient/${p.uniqueId}`, { state: p })
                   }
                   className="hover:bg-gray-50 cursor-pointer"
                 >
