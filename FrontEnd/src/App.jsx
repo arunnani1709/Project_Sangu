@@ -23,7 +23,8 @@ import MedicineList from './Components/Medicin/MedicineList/MedicineList';
 import ResetPassword from './Components/Reset password/ResetPassword';
 import Swarnaprashana from './Components/Patients/Swarnaprashana/SwarnaPrasana';
 import SwarnaprashanaPatientDetails from './Components/Patients/Swarnaprashana/SwarnaprashanaPatientDetails';
-
+import PatientDetails from './Components/Patients/Indivusalpatent/IndivusalPatent'
+import IpPatient from './Components/Patients/IPD/IpPatient';
 //import LatestUpdates from './pages/LatestUpdates';
 const AuthSyncWrapper = ({ children }) => {
   const dispatch = useDispatch();
@@ -59,6 +60,8 @@ function App() {
           <Route path="medicine-list" element={<PrivateRoute><MedicineList/></PrivateRoute>} />
           <Route path="swarna-parasana" element={<Swarnaprashana/>} />
           <Route path="/patient/:patientId" element={<SwarnaprashanaPatientDetails />}/>
+          <Route path="/patients/:clinicId" element={<PatientDetails />} />
+          <Route path="/ip-patient/:clinicId" element={<IpPatient />} />
         </Route>
       </Routes>
       </AuthSyncWrapper>
