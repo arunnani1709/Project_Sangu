@@ -23,7 +23,7 @@ import MedicineList from './Components/Medicin/MedicineList/MedicineList';
 import ResetPassword from './Components/Reset password/ResetPassword';
 import Swarnaprashana from './Components/Patients/Swarnaprashana/SwarnaPrasana';
 import SwarnaprashanaPatientDetails from './Components/Patients/Swarnaprashana/SwarnaprashanaPatientDetails';
-import PatientDetails from './Components/Patients/Indivusalpatent/IndivusalPatent'
+import PatientDetails from './Components/Patients/Indivusalpatent/IndivusalpatentOpdDetail/IndivusalPatent'
 import IpPatient from './Components/Patients/IPD/IpPatient';
 //import LatestUpdates from './pages/LatestUpdates';
 const AuthSyncWrapper = ({ children }) => {

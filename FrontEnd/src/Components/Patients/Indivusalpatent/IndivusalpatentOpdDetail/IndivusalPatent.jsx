@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import OpdDoctorNotes from "./opddoctorsnote";
+import OpdDoctorNotes from "../Opddoctorsnote/opddoctorsnote";
 
 
 
