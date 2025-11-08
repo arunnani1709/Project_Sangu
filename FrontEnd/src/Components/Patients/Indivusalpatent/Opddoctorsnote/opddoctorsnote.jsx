@@ -26,6 +26,7 @@ const OpdDoctorNotes = ({ clinicId }) => {
   const [doctorNotes, setDoctorNotes] = useState([]);
   const [openNoteId, setOpenNoteId] = useState(null);
   const [noteDate, setNoteDate] = useState("");
+  const [originalMedicines, setOriginalMedicines] = useState({}); // Track original medicines for each note
 
   const [shortForm, setShortForm] = useState("");
   const [dose1, setDose1] = useState("");
@@ -56,7 +57,7 @@ const OpdDoctorNotes = ({ clinicId }) => {
   useEffect(() => {
     if (!clinicId) return;
     axios
-      .get(`/api/notes/clinic/${clinicId}`)
+      .get(`/api/opd-notes/patient/${clinicId}`)
       .then((res) => {
         const sorted = res.data.sort(
           (a, b) => new Date(b.visitDate) - new Date(a.visitDate)
@@ -68,8 +69,18 @@ const OpdDoctorNotes = ({ clinicId }) => {
             const curr = new Date(note.visitDate);
             daysSinceLastVisit = Math.ceil((curr - prev) / (1000 * 60 * 60 * 24));
           }
+          
+          // Parse the notes JSON string to extract individual fields
+          let parsedNotes = {};
+          try {
+            parsedNotes = note.notes ? JSON.parse(note.notes) : {};
+          } catch (e) {
+            console.error("Error parsing notes:", e);
+          }
+          
           return {
             ...note,
+            ...parsedNotes, // Spread the parsed note fields (complaint, diagnosis, etc.)
             id: note.id,
             dbId: note.id,
             saved: true,
@@ -130,58 +141,97 @@ const OpdDoctorNotes = ({ clinicId }) => {
     if (!note) return;
 
     try {
+      // Prepare payload for backend
+      const payload = {
+        patientId: clinicId,
+        visitDate: note.visitDate,
+        notes: JSON.stringify({
+          complaint: note.complaint,
+          diagnosis: note.diagnosis,
+          tests: note.tests,
+          treatmentOrProcedure: note.treatmentOrProcedure,
+          department: note.department,
+          consultant: note.consultant,
+          weight: note.weight,
+          temperature: note.temperature,
+          bp: note.bp,
+        }),
+        medicines: note.medicines,
+      };
+
       let savedNoteRes;
-
-      // Save or update the doctor's note (without medicines first)
-      if (note.dbId) {
-        savedNoteRes = await axios.put(`/api/notes/${note.dbId}`, {
-          ...note,
-          clinicId,
-          medicines: [],
+      const isEditing = note.dbId; // Check if this is an edit (has dbId) or new note
+      
+      if (isEditing) {
+        // Update existing note
+        savedNoteRes = await axios.put(`/api/opd-notes/${note.dbId}`, payload);
+        
+        // When editing, only deduct NEW medicines that were added
+        const originalMeds = originalMedicines[note.id] || [];
+        const newMedicines = note.medicines.filter(med => {
+          // Check if this medicine was in the original list
+          return !originalMeds.some(origMed => 
+            origMed.code === med.code && 
+            origMed.type === med.type &&
+            origMed.totalAmount === med.totalAmount &&
+            origMed.bottleCount === med.bottleCount
+          );
         });
-      } else {
-        savedNoteRes = await axios.post("/api/notes", {
-          ...note,
-          clinicId,
-          medicines: [],
-        });
-      }
+        
+        // Only deduct the newly added medicines
+        if (newMedicines.length > 0) {
+          for (const med of newMedicines) {
+            const backendType = med.type || getBackendType(med.unit, med.selectedType);
+            
+            const deductPayload =
+              backendType === "Kashaya" || backendType === "Ghrita"
+                ? { bottleCount: Number(med.bottleCount) || 0 }
+                : { quantity: Number(med.totalAmount) || 0 };
 
-      // After note is saved, deduct medicine inventory and save prescriptions
-      if (note.medicines.length > 0) {
-        const enrichedMeds = note.medicines.map((med) => ({
-          ...med,
-          clinicId,
-          visitDate: note.visitDate,
-          type: med.type || getBackendType(med.unit, med.selectedType),
-        }));
+            const validQty =
+              (deductPayload.quantity && deductPayload.quantity > 0) ||
+              (deductPayload.bottleCount && deductPayload.bottleCount > 0);
 
-        // Deduct inventory for each med
-        for (const med of enrichedMeds) {
-          const payload =
-            med.type === "Kashaya" || med.type === "Ghrita"
-              ? { bottleCount: Number(med.bottleCount) }
-              : { quantity: Number(med.totalAmount) };
-
-          const validQty =
-            (payload.quantity && payload.quantity > 0) ||
-            (payload.bottleCount && payload.bottleCount > 0);
-
-          if (validQty) {
-            await axios.put(`/api/medicines/${med.code}/${med.type}/deduct`, payload);
+            if (validQty) {
+              try {
+                await axios.put(`/api/medicines/${med.code}/${backendType}/deduct`, deductPayload);
+              } catch (deductErr) {
+                console.error(`Error deducting ${med.name}:`, deductErr);
+              }
+            }
           }
         }
+      } else {
+        // Create new note
+        savedNoteRes = await axios.post("/api/opd-notes", payload);
+        
+        // Deduct medicine inventory for all medicines in new note
+        if (note.medicines.length > 0) {
+          for (const med of note.medicines) {
+            const backendType = med.type || getBackendType(med.unit, med.selectedType);
+            
+            const deductPayload =
+              backendType === "Kashaya" || backendType === "Ghrita"
+                ? { bottleCount: Number(med.bottleCount) || 0 }
+                : { quantity: Number(med.totalAmount) || 0 };
 
-        // Save prescription data
-        await axios.post("/api/notes/prescriptions", {
-          clinicId,
-          visitDate: note.visitDate,
-          medicines: enrichedMeds,
-        });
+            const validQty =
+              (deductPayload.quantity && deductPayload.quantity > 0) ||
+              (deductPayload.bottleCount && deductPayload.bottleCount > 0);
+
+            if (validQty) {
+              try {
+                await axios.put(`/api/medicines/${med.code}/${backendType}/deduct`, deductPayload);
+              } catch (deductErr) {
+                console.error(`Error deducting ${med.name}:`, deductErr);
+              }
+            }
+          }
+        }
       }
 
       // Mark the note as saved and set its dbId
-      const newDbId = savedNoteRes.data.note?.id || savedNoteRes.data.id;
+      const newDbId = savedNoteRes.data.id;
       setDoctorNotes((prev) =>
         prev.map((n) =>
           n.id === id
@@ -189,6 +239,10 @@ const OpdDoctorNotes = ({ clinicId }) => {
             : n
         )
       );
+      
+      alert(isEditing 
+        ? "Doctor's note updated successfully!" 
+        : "Doctor's note saved and medicine quantities updated successfully!");
     } catch (err) {
       console.error("Error saving note:", err);
       alert("Failed to save doctor's note.");
@@ -570,13 +624,19 @@ const OpdDoctorNotes = ({ clinicId }) => {
                         Download
                       </button>
                       <button
-                        onClick={() =>
+                        onClick={() => {
+                          // Save the original medicines before editing
+                          setOriginalMedicines((prev) => ({
+                            ...prev,
+                            [note.id]: JSON.parse(JSON.stringify(note.medicines)) // Deep copy
+                          }));
+                          // Enable editing mode
                           setDoctorNotes((prev) =>
                             prev.map((n) =>
                               n.id === note.id ? { ...n, saved: false, dbId: n.dbId } : n
                             )
-                          )
-                        }
+                          );
+                        }}
                         className="px-4 py-2 bg-yellow-500 text-white rounded-full text-sm hover:bg-yellow-600"
                       >
                         Edit

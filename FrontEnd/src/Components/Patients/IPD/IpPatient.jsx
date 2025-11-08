@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import DoctorNotes from "../IPD/DoctorNotes";
 
 const IpPatient = () => {
@@ -9,22 +10,107 @@ const IpPatient = () => {
   const patient = state?.patient;
 
   const [admissions, setAdmissions] = useState([]);
-  const [nextIpNumber, setNextIpNumber] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [caseSheetData, setCaseSheetData] = useState({}); // Store case sheet data by admission index
+  const [savedCaseSheets, setSavedCaseSheets] = useState({}); // Track which case sheets are saved
 
-  const handleAdmitToWard = () => {
-    const ipNumber = "IP" + String(nextIpNumber).padStart(4, "0");
-    const hardcodedDate = "2025-10-16"; // Hardcoded for now
+  // Fetch existing admissions for this patient
+  useEffect(() => {
+    if (!patient?.clinicId) return;
+    
+    const fetchAdmissions = async () => {
+      try {
+        const response = await axios.get(`/api/ipd-admissions/patient/${patient.clinicId}`);
+        const formattedAdmissions = response.data.map(adm => ({
+          id: adm.id,
+          ipNumber: adm.ipNumber,
+          visitDate: adm.admissionDate,
+          isOpen: false,
+          showCaseSheet: false,
+          status: adm.status,
+          ward: adm.ward,
+          bedNumber: adm.bedNumber,
+          dischargeDate: adm.dischargeDate,
+        }));
+        setAdmissions(formattedAdmissions);
 
-    setAdmissions((prev) => [
-      ...prev,
-      {
-        ipNumber,
-        visitDate: hardcodedDate,
-        isOpen: false,
-        showCaseSheet: false,
-      },
-    ]);
-    setNextIpNumber((prev) => prev + 1);
+        // Fetch case sheets for each admission
+        const caseSheets = {};
+        const savedStatus = {};
+        for (const adm of formattedAdmissions) {
+          try {
+            const caseSheetRes = await axios.get(`/api/ipd-case-sheets/admission/${adm.id}`);
+            caseSheets[adm.id] = caseSheetRes.data;
+            savedStatus[adm.id] = true; // Mark as saved if data exists
+          } catch (err) {
+            // Case sheet doesn't exist yet, that's okay
+            caseSheets[adm.id] = {
+              chiefComplaints: "",
+              associateComplaints: "",
+              historyOfPresentIllness: "",
+              pastHistory: "",
+              medicalSurgicalHistory: "",
+              menstrualHistory: "",
+              personalHistory: "",
+              generalSpecialExamination: "",
+              investigation: "",
+              treatments: "",
+            };
+            savedStatus[adm.id] = false; // Mark as not saved
+          }
+        }
+        setCaseSheetData(caseSheets);
+        setSavedCaseSheets(savedStatus);
+      } catch (err) {
+        console.error("Error fetching admissions:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAdmissions();
+  }, [patient]);
+
+  const handleAdmitToWard = async () => {
+    if (!patient?.clinicId) {
+      alert("Patient information is missing.");
+      return;
+    }
+
+    const admissionDate = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD
+
+    try {
+      const response = await axios.post("/api/ipd-admissions", {
+        clinicId: patient.clinicId,
+        admissionDate,
+        ward: null,
+        bedNumber: null,
+        notes: null,
+      });
+
+      const newAdmission = response.data.admission;
+      
+      // Add to state
+      setAdmissions((prev) => [
+        {
+          id: newAdmission.id,
+          ipNumber: newAdmission.ipNumber,
+          visitDate: newAdmission.admissionDate,
+          isOpen: false,
+          showCaseSheet: false,
+          status: newAdmission.status,
+          ward: newAdmission.ward,
+          bedNumber: newAdmission.bedNumber,
+          dischargeDate: newAdmission.dischargeDate,
+        },
+        ...prev,
+      ]);
+
+      alert(`Patient admitted successfully!\nIP Number: ${newAdmission.ipNumber}\nClinic ID (NJ): ${newAdmission.clinicId}\nOP Number: ${newAdmission.opNumber}`);
+    } catch (err) {
+      console.error("Error admitting patient:", err);
+      alert("Failed to admit patient. Please try again.");
+    }
   };
 
   const toggleNote = (index) => {
@@ -51,6 +137,53 @@ const IpPatient = () => {
     );
   };
 
+  const handleCaseSheetChange = (admissionId, field, value) => {
+    setCaseSheetData((prev) => ({
+      ...prev,
+      [admissionId]: {
+        ...(prev[admissionId] || {}),
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleSaveCaseSheet = async (e, admission) => {
+    e.preventDefault();
+    
+    const data = caseSheetData[admission.id] || {};
+
+    try {
+      const payload = {
+        admissionId: admission.id,
+        ipNumber: admission.ipNumber,
+        chiefComplaints: data.chiefComplaints || "",
+        associateComplaints: data.associateComplaints || "",
+        historyOfPresentIllness: data.historyOfPresentIllness || "",
+        pastHistory: data.pastHistory || "",
+        medicalSurgicalHistory: data.medicalSurgicalHistory || "",
+        menstrualHistory: data.menstrualHistory || "",
+        personalHistory: data.personalHistory || "",
+        generalSpecialExamination: data.generalSpecialExamination || "",
+        investigation: data.investigation || "",
+        treatments: data.treatments || "",
+      };
+
+      const response = await axios.post("/api/ipd-case-sheets", payload);
+      
+      // Mark this case sheet as saved
+      setSavedCaseSheets((prev) => ({
+        ...prev,
+        [admission.id]: true,
+      }));
+      
+      alert(`Case sheet saved successfully for IP Number: ${admission.ipNumber}`);
+      console.log("Case sheet saved:", response.data);
+    } catch (err) {
+      console.error("Error saving case sheet:", err);
+      alert("Failed to save case sheet. Please try again.");
+    }
+  };
+
   if (!patient) {
     return (
       <div className="p-8 text-center text-red-600">
@@ -61,6 +194,14 @@ const IpPatient = () => {
         >
           Go Back
         </button>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="p-8 text-center">
+        <p>Loading admissions...</p>
       </div>
     );
   }
@@ -151,7 +292,11 @@ const IpPatient = () => {
             <div className="mt-4 space-y-4">
               <div className="w-full overflow-x-auto">
                 <div className="min-w-[320px] max-w-full">
-                  <DoctorNotes clinicId={patient.clinicId} />
+                  <DoctorNotes 
+                    clinicId={patient.clinicId} 
+                    ipNumber={admission.ipNumber}
+                    admissionId={admission.id}
+                  />
                 </div>
               </div>
 
@@ -159,39 +304,159 @@ const IpPatient = () => {
               {admission.showCaseSheet && (
                 <div className="p-4 bg-white rounded-lg shadow-inner border border-blue-200 overflow-x-auto">
                   <h4 className="font-semibold text-blue-700 mb-2">
-                    Case Sheet Details
+                    Case Sheet Details - IP Number: {admission.ipNumber}
                   </h4>
-                  <form className="space-y-2 min-w-[300px]">
-                    {[
-                      "Cheaf Complaints",
-                      "Associate Complaints",
-                      "History of Present Illness",
-                      "Past History",
-                      "Medical / Surgical History",
-                      "Menstrual History",
-                      "Personal History",
-                      "General / Special Examination",
-                      "Investigation",
-                      "Treatments",
-                    ].map((label, i) => (
-                      <div key={i}>
-                        <label className="block text-sm font-medium text-gray-700">
-                          {label}:
-                        </label>
-                        <textarea
-                          placeholder={`Enter ${label.toLowerCase()}`}
-                          className="mt-1 p-2 w-full border rounded"
-                        ></textarea>
-                      </div>
-                    ))}
+                  <form 
+                    className="space-y-2 min-w-[300px]"
+                    onSubmit={(e) => handleSaveCaseSheet(e, admission)}
+                  >
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Chief Complaints:
+                      </label>
+                      <textarea
+                        value={caseSheetData[admission.id]?.chiefComplaints || ""}
+                        onChange={(e) => handleCaseSheetChange(admission.id, "chiefComplaints", e.target.value)}
+                        placeholder="Enter chief complaints"
+                        className="mt-1 p-2 w-full border rounded"
+                      ></textarea>
+                    </div>
 
-                    <div className="pt-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Associate Complaints:
+                      </label>
+                      <textarea
+                        value={caseSheetData[admission.id]?.associateComplaints || ""}
+                        onChange={(e) => handleCaseSheetChange(admission.id, "associateComplaints", e.target.value)}
+                        placeholder="Enter associate complaints"
+                        className="mt-1 p-2 w-full border rounded"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        History of Present Illness:
+                      </label>
+                      <textarea
+                        value={caseSheetData[admission.id]?.historyOfPresentIllness || ""}
+                        onChange={(e) => handleCaseSheetChange(admission.id, "historyOfPresentIllness", e.target.value)}
+                        placeholder="Enter history of present illness"
+                        className="mt-1 p-2 w-full border rounded"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Past History:
+                      </label>
+                      <textarea
+                        value={caseSheetData[admission.id]?.pastHistory || ""}
+                        onChange={(e) => handleCaseSheetChange(admission.id, "pastHistory", e.target.value)}
+                        placeholder="Enter past history"
+                        className="mt-1 p-2 w-full border rounded"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Medical / Surgical History:
+                      </label>
+                      <textarea
+                        value={caseSheetData[admission.id]?.medicalSurgicalHistory || ""}
+                        onChange={(e) => handleCaseSheetChange(admission.id, "medicalSurgicalHistory", e.target.value)}
+                        placeholder="Enter medical / surgical history"
+                        className="mt-1 p-2 w-full border rounded"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Menstrual History:
+                      </label>
+                      <textarea
+                        value={caseSheetData[admission.id]?.menstrualHistory || ""}
+                        onChange={(e) => handleCaseSheetChange(admission.id, "menstrualHistory", e.target.value)}
+                        placeholder="Enter menstrual history"
+                        className="mt-1 p-2 w-full border rounded"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Personal History:
+                      </label>
+                      <textarea
+                        value={caseSheetData[admission.id]?.personalHistory || ""}
+                        onChange={(e) => handleCaseSheetChange(admission.id, "personalHistory", e.target.value)}
+                        placeholder="Enter personal history"
+                        className="mt-1 p-2 w-full border rounded"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        General / Special Examination:
+                      </label>
+                      <textarea
+                        value={caseSheetData[admission.id]?.generalSpecialExamination || ""}
+                        onChange={(e) => handleCaseSheetChange(admission.id, "generalSpecialExamination", e.target.value)}
+                        placeholder="Enter general / special examination"
+                        className="mt-1 p-2 w-full border rounded"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Investigation:
+                      </label>
+                      <textarea
+                        value={caseSheetData[admission.id]?.investigation || ""}
+                        onChange={(e) => handleCaseSheetChange(admission.id, "investigation", e.target.value)}
+                        placeholder="Enter investigation"
+                        className="mt-1 p-2 w-full border rounded"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Treatments:
+                      </label>
+                      <textarea
+                        value={caseSheetData[admission.id]?.treatments || ""}
+                        onChange={(e) => handleCaseSheetChange(admission.id, "treatments", e.target.value)}
+                        placeholder="Enter treatments"
+                        className="mt-1 p-2 w-full border rounded"
+                      ></textarea>
+                    </div>
+
+                    <div className="pt-3 flex gap-3">
                       <button
                         type="submit"
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        disabled={savedCaseSheets[admission.id]}
+                        className={`px-4 py-2 text-white rounded ${
+                          savedCaseSheets[admission.id]
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
                       >
-                        Save Case Sheet
+                        {savedCaseSheets[admission.id] ? "Saved Case Sheet ✓" : "Save Case Sheet"}
                       </button>
+                      
+                      {savedCaseSheets[admission.id] && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSavedCaseSheets((prev) => ({
+                              ...prev,
+                              [admission.id]: false,
+                            }));
+                          }}
+                          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                        >
+                          Edit Case Sheet
+                        </button>
+                      )}
                     </div>
                   </form>
                 </div>

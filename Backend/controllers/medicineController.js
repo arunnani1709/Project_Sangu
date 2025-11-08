@@ -19,7 +19,13 @@ export const addMedicine = async (req, res) => {
   try {
     const { name, code, type, quantity } = req.body;
 
-    if (!name || !code || !type || quantity === undefined || quantity === null) {
+    if (
+      !name ||
+      !code ||
+      !type ||
+      quantity === undefined ||
+      quantity === null
+    ) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -70,5 +76,52 @@ export const deleteMedicine = async (req, res) => {
   } catch (err) {
     console.error("Delete medicine error:", err);
     return res.status(500).json({ error: "Failed to delete medicine" });
+  }
+};
+
+// PUT deduct medicine quantity
+export const deductMedicine = async (req, res) => {
+  try {
+    const { code, type } = req.params;
+    const { quantity, bottleCount } = req.body;
+
+    // Find medicine by code and type
+    const medicine = await Medicine.findOne({ where: { code, type } });
+
+    if (!medicine) {
+      return res.status(404).json({ error: "Medicine not found" });
+    }
+
+    // Determine the amount to deduct
+    let deductAmount = 0;
+    if (type === "Kashaya" || type === "Ghrita") {
+      deductAmount = bottleCount || 0;
+    } else {
+      deductAmount = quantity || 0;
+    }
+
+    // Check if sufficient quantity available
+    if (medicine.quantity < deductAmount) {
+      return res.status(400).json({
+        error: "Insufficient quantity available",
+        available: medicine.quantity,
+        requested: deductAmount,
+      });
+    }
+
+    // Deduct the quantity
+    medicine.quantity -= deductAmount;
+    await medicine.save();
+
+    return res.json({
+      message: "Medicine quantity deducted successfully",
+      medicine: medicine,
+      deducted: deductAmount,
+    });
+  } catch (err) {
+    console.error("Deduct medicine error:", err);
+    return res
+      .status(500)
+      .json({ error: "Failed to deduct medicine quantity" });
   }
 };

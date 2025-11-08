@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const DoctorNotes = ({ clinicId }) => {
+const DoctorNotes = ({ clinicId, ipNumber, admissionId }) => {
   const [doctorNotes, setDoctorNotes] = useState([]);
   const [noteDate, setNoteDate] = useState("");
   const [openNoteId, setOpenNoteId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch existing notes
+  // Fetch existing notes for this admission
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/notes/${clinicId}`);
-        setDoctorNotes(res.data || []);
+        if (!admissionId) return;
+        const res = await axios.get(`/api/ipd-doctor-notes/admission/${admissionId}`);
+        const formattedNotes = res.data.map((note) => ({
+          ...note,
+          saved: true, // Mark existing notes as saved
+        }));
+        setDoctorNotes(formattedNotes || []);
       } catch (error) {
-        console.error("Error fetching notes:", error);
+        console.error("Error fetching IPD doctor notes:", error);
       }
     };
-    if (clinicId) fetchNotes();
-  }, [clinicId]);
+    if (clinicId && admissionId) fetchNotes();
+  }, [clinicId, admissionId]);
 
   // Add new Doctor Note
   const handleAddNote = () => {
@@ -53,15 +58,41 @@ const DoctorNotes = ({ clinicId }) => {
   const handleSaveNote = async (note) => {
     try {
       setLoading(true);
-      await axios.post("http://localhost:3001/api/notes", {
-        clinicId,
-        visitDate: note.visitDate,
-        freshComplaints: note.freshComplaints,
-        improvementsOrProgress: note.improvementsOrProgress,
-        treatment: note.treatment,
-        vitals: note.vitals,
-        outcome: note.outcome,
-      });
+
+      if (note.saved && note.id) {
+        // Update existing note
+        await axios.put(`/api/ipd-doctor-notes/${note.id}`, {
+          visitDate: note.visitDate,
+          freshComplaints: note.freshComplaints,
+          improvementsOrProgress: note.improvementsOrProgress,
+          treatment: note.treatment,
+          vitals: note.vitals,
+          outcome: note.outcome,
+        });
+      } else {
+        // Create new note
+        const response = await axios.post("/api/ipd-doctor-notes", {
+          admissionId,
+          ipNumber,
+          clinicId,
+          visitDate: note.visitDate,
+          freshComplaints: note.freshComplaints,
+          improvementsOrProgress: note.improvementsOrProgress,
+          treatment: note.treatment,
+          vitals: note.vitals,
+          outcome: note.outcome,
+        });
+
+        // Update the note with the backend ID
+        setDoctorNotes((prev) =>
+          prev.map((n) =>
+            n.id === note.id ? { ...response.data.note, saved: true, id: response.data.note.id } : n
+          )
+        );
+        alert("IPD Doctor's Note saved successfully!");
+        setLoading(false);
+        return;
+      }
 
       setDoctorNotes((prev) =>
         prev.map((n) =>
@@ -69,9 +100,9 @@ const DoctorNotes = ({ clinicId }) => {
         )
       );
 
-      alert("Doctor's Note saved successfully!");
+      alert("IPD Doctor's Note saved successfully!");
     } catch (error) {
-      console.error("Error saving note:", error);
+      console.error("Error saving IPD doctor note:", error);
       alert("Failed to save doctor's note.");
     } finally {
       setLoading(false);
