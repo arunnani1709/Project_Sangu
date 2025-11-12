@@ -519,84 +519,86 @@ const OpdDoctorNotes = ({ clinicId }) => {
               )}
 
              {note.medicines.length > 0 && (
-  <div className="mt-4 space-y-2">
-    <h4 className="font-medium text-sm">Prescribed Medicines</h4>
+<div className="mt-4 space-y-2">
+  <h4 className="font-medium text-sm">Prescribed Medicines</h4>
 
-    {/* Scrollable wrapper */}
-    <div className="w-full overflow-x-auto">
-      {/* Inline block container to keep content in one line */}
-      <div className="inline-flex gap-4 min-w-max">
-        {note.medicines.map((med, idx) => (
-          <div
-            key={idx}
-            className="flex items-center gap-6 bg-white p-3 rounded shadow-sm text-base border min-w-max"
-          >
-            {/* Medicine Name */}
-            <div className="w-28 text-center">
-              <div className="text-xs text-gray-500">Medicine</div>
-              <div className="font-medium">{med.name}</div>
-            </div>
+  {/* Scrollable wrapper (enables horizontal scroll on mobile) */}
+  <div className="w-full overflow-x-auto">
+    {/* Use vertical stacking for medicine cards */}
+    <div className="flex flex-col gap-4 min-w-max">
+      {note.medicines.map((med, idx) => (
+        <div
+          key={idx}
+          className="flex flex-wrap md:flex-nowrap items-center gap-6 bg-white p-3 rounded shadow-sm text-base border min-w-[600px]"
+        >
+          {/* Medicine Name */}
+          <div className="w-28 text-center">
+            <div className="text-xs text-gray-500">Medicine</div>
+            <div className="font-medium">{med.name}</div>
+          </div>
 
-            {/* Doses */}
-            {!["Soap", "Paste", "Shampoo"].includes(med.selectedType || med.type) && (
-              <>
-                <div className="w-16 text-center">
-                  <div className="text-xs text-gray-500">Morn</div>
-                  <div>{med.dose1}</div>
-                </div>
-                <div className="w-16 text-center">
-                  <div className="text-xs text-gray-500">Aft</div>
-                  <div>{med.dose2}</div>
-                </div>
-                <div className="w-16 text-center">
-                  <div className="text-xs text-gray-500">Eve</div>
-                  <div>{med.dose3}</div>
-                </div>
-              </>
-            )}
-
-            {/* Time */}
-            {!hideTimeTypes.includes(med.selectedType || med.type) && (
-              <div className="w-28 text-center">
-                <div className="text-xs text-gray-500">Time</div>
-                <div>
-                  {{
-                    "B/F": "Before Food",
-                    "A/F": "After Food",
-                    "I/B/F": "In Between Food",
-                  }[med.time] || med.time}
-                </div>
+          {/* Doses */}
+          {!["Soap", "Paste", "Shampoo"].includes(med.selectedType || med.type) && (
+            <>
+              <div className="w-16 text-center">
+                <div className="text-xs text-gray-500">Morn</div>
+                <div>{med.dose1}</div>
               </div>
-            )}
-
-            {/* Days */}
-            {!hideDaysTypes.includes(med.selectedType || med.type) && (
-              <div className="w-20 text-center">
-                <div className="text-xs text-gray-500">Days</div>
-                <div>{med.days}</div>
+              <div className="w-16 text-center">
+                <div className="text-xs text-gray-500">Aft</div>
+                <div>{med.dose2}</div>
               </div>
-            )}
+              <div className="w-16 text-center">
+                <div className="text-xs text-gray-500">Eve</div>
+                <div>{med.dose3}</div>
+              </div>
+            </>
+          )}
 
-            {/* Total */}
+          {/* Time */}
+          {!hideTimeTypes.includes(med.selectedType || med.type) && (
             <div className="w-28 text-center">
-              <div className="text-xs text-gray-500">Total</div>
+              <div className="text-xs text-gray-500">Time</div>
               <div>
-                {med.totalAmount} {med.unit}
+                {{
+                  "B/F": "Before Food",
+                  "A/F": "After Food",
+                  "I/B/F": "In Between Food",
+                }[med.time] || med.time}
               </div>
             </div>
+          )}
 
-            {/* Bottle */}
-            <div className="w-28 text-center">
-              <div className="text-xs text-gray-500">Bottle</div>
-              <div>
-                {med.unit === "ml" ? `${med.bottleCount} bottle` : "-"}
-              </div>
+          {/* Days */}
+          {!hideDaysTypes.includes(med.selectedType || med.type) && (
+            <div className="w-20 text-center">
+              <div className="text-xs text-gray-500">Days</div>
+              <div>{med.days}</div>
+            </div>
+          )}
+
+          {/* Total */}
+          <div className="w-28 text-center">
+            <div className="text-xs text-gray-500">Total</div>
+            <div>
+              {med.totalAmount} {med.unit}
             </div>
           </div>
-        ))}
-      </div>
+
+          {/* Bottle */}
+          <div className="w-28 text-center">
+            <div className="text-xs text-gray-500">Bottle</div>
+            <div>
+              {med.unit === "ml" ? `${med.bottleCount} bottle` : "-"}
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   </div>
+</div>
+
+
 )}
 
 
