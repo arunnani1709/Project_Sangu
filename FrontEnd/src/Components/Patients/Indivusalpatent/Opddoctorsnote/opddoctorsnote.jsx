@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import AddInduviualPatientMedicine from "../Indivusalpatent medicin/AddInduviualPatientMedicine";
 
 const getBackendType = (unit, selectedType) => {
@@ -13,15 +14,15 @@ const getBackendType = (unit, selectedType) => {
   return selectedType || "Tablet";
 };
 
-const fetchPatient = async (clinicId, visitDate) => {
-  const res = await axios.get(`/api/patients/${clinicId}?visitDate=${visitDate}`);
-  return res.data;
-};
+
 
 const getFrontendUnit = (type) => (type === "Kashaya" ? "ml" : "No");
 
 const OpdDoctorNotes = ({ clinicId }) => {
   const navigate = useNavigate();
+  const patientData = useSelector((state) =>
+    (state.patients.list || []).find((p) => p.clinicId === clinicId)
+  );
 
   const [doctorNotes, setDoctorNotes] = useState([]);
   const [openNoteId, setOpenNoteId] = useState(null);
@@ -615,8 +616,7 @@ const OpdDoctorNotes = ({ clinicId }) => {
                     <p className="text-sm text-green-600 font-medium">Saved ✅</p>
                     <div className="flex gap-4">
                       <button
-                        onClick={async () => {
-                          const patientData = await fetchPatient(clinicId, note.visitDate);
+                        onClick={() => {
                           navigate("/download-prescription", {
                             state: { note, patient: patientData },
                           });

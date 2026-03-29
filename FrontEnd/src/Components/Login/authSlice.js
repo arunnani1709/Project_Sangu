@@ -1,33 +1,25 @@
 // src/features/auth/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
-// Async login logic (simulated backend check)
+const API_URL = "http://localhost:5000";
+
+// Async login — calls real backend with username + password
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (formData, thunkAPI) => {
     try {
       const { username, password } = formData;
+      const response = await axios.post(`${API_URL}/api/auth/login`, { username, password });
+      const { user, token } = response.data;
 
-      let user = null;
-
-      if (username === "admin" && password === "admin123") {
-        user = { role: "admin", name: "Admin" };
-      } else if (password === "doctor123") {
-        user = { role: "doctor", name: username };
-      } else {
-        return thunkAPI.rejectWithValue("Invalid credentials");
-      }
-
-      // Simulate token generation
-      const token = "dummy-token-" + Date.now();
-
-      // Save to localStorage
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
 
       return { user, token };
     } catch (error) {
-      return thunkAPI.rejectWithValue("Login failed",error);
+      const message = error.response?.data?.message || "Login failed";
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );

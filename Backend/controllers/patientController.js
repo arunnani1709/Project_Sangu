@@ -10,6 +10,8 @@ export const getPatients = async (req, res) => {
   }
 };
 
+
+
 export const createPatient = async (req, res) => {
   try {
     const { name, phone, age, sex, address, visitDate } = req.body;

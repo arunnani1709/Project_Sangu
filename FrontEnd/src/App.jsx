@@ -24,6 +24,7 @@ import ResetPassword from './Components/Reset password/ResetPassword';
 import Swarnaprashana from './Components/Patients/Swarnaprashana/SwarnaPrasana';
 import SwarnaprashanaPatientDetails from './Components/Patients/Swarnaprashana/SwarnaprashanaPatientDetails';
 import PatientDetails from './Components/Patients/Indivusalpatent/IndivusalpatentOpdDetail/IndivusalPatent'
+import PrescriptionTemplate from './Components/Patients/Indivusalpatent/PrescriptionTemplate';
 import IpPatient from './Components/Patients/IPD/IpPatient';
 //import LatestUpdates from './pages/LatestUpdates';
 const AuthSyncWrapper = ({ children }) => {
@@ -62,6 +63,7 @@ function App() {
           <Route path="/patient/:patientId" element={<SwarnaprashanaPatientDetails />}/>
           <Route path="/patients/:clinicId" element={<PatientDetails />} />
           <Route path="/ip-patient/:clinicId" element={<IpPatient />} />
+          <Route path="/download-prescription" element={<PrivateRoute><PrescriptionTemplate /></PrivateRoute>} />
         </Route>
       </Routes>
       </AuthSyncWrapper>
