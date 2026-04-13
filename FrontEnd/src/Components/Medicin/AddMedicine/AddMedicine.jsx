@@ -157,8 +157,6 @@ if (!name.trim() || !code.trim() || quantity === "" || !type.trim()) {
         >
           <option value="">Select Medicine Type</option>
           <option value="Tablet">Tablet</option>
-          <option value="Asava">Asava</option>
-          <option value="Arista">Arista</option>
           <option value="Basma">Basma</option>
           <option value="Capsule">Capsule</option>
           <option value="Ghrita">Ghrita(Thuppa)</option>

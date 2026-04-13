@@ -1,0 +1,17 @@
+/* ✅ A4 Perfect Layout */
+.pdf-container {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 15mm;
+  margin: auto;
+  background: white;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+
+/* Avoid content breaking */
+.pdf-container div,
+.pdf-container textarea,
+.pdf-container p {
+  page-break-inside: avoid;
+}
