@@ -39,12 +39,12 @@ const doctors = [
   },
 ];
 
-const stats = [
-  { icon: Users, value: "100 +", label: "Patients Treated" },
-  { icon: Heart, value: "95%", label: "Success Rate" },
-  { icon: Award, value: "25+", label: "Awards Won" },
-  { icon: Clock, value: "24/7", label: "Emergency Care" },
-];
+// const stats = [
+//   { icon: Users, value: "100 +", label: "Patients Treated" },
+//   { icon: Heart, value: "95%", label: "Success Rate" },
+//   { icon: Award, value: "25+", label: "Awards Won" },
+//   { icon: Clock, value: "24/7", label: "Emergency Care" },
+// ];
 
 const values = [
   {
@@ -252,13 +252,13 @@ const AboutUs = () => {
       </section>
 
       {/* Stats */}
-      <section className="py-20 bg-gray-100">
+      {/* <section className="py-20 bg-gray-100">
         <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
             <StatCard key={stat.label} stat={stat} index={index} />
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Mission */}
       <section className="py-20 bg-white">

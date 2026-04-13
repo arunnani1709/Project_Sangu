@@ -205,6 +205,10 @@ const IpPatient = () => {
       </div>
     );
   }
+  const handleDischarge = (admission) => {
+  const url = `/discharge/${admission.id}`;
+  window.open(url, "_blank");
+};
 
   return (
     <div className="p-6 md:p-8 mx-auto w-full max-w-[1100px]">
@@ -269,12 +273,19 @@ const IpPatient = () => {
             </h3>
 
             <div className="flex gap-2 mt-2 sm:mt-0">
-              <button
-                onClick={() => toggleNote(index)}
-                className="text-white bg-green-700 px-3 py-1 rounded hover:bg-green-800 transition"
-              >
-                {admission.isOpen ? "Hide" : "Open"}
-              </button>
+  <button
+    onClick={() => handleDischarge(admission)}
+    className="text-white bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition"
+  >
+    Discharge
+  </button>
+
+  <button
+    onClick={() => toggleNote(index)}
+    className="text-white bg-green-700 px-3 py-1 rounded hover:bg-green-800 transition"
+  >
+    {admission.isOpen ? "Hide" : "Open"}
+  </button>
 
               {admission.isOpen && (
                 <button

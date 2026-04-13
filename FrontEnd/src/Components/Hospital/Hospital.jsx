@@ -57,42 +57,42 @@ const AnimatedCard = ({ children, index }) => {
 };
 
 const panchakarmaFacilities = [
+    { icon: <GiMedicalPack size={30} className="text-green-600" />, title: "OPD", description: "Consultations and treatments by our specialized doctors." },
+     { icon: <FaProcedures size={30} className="text-green-600" />, title: "IPD (In-Patient Department)", description: "Comfortable inpatient facilities with attentive care for short & long-term stays." },
   { icon: <FaSpa size={30} className="text-green-600" />, title: "Panchakarma Theaters", description: "Two fully equipped Panchakarma theaters with traditional & modern amenities." },
   { icon: <FaWalking size={30} className="text-green-600" />, title: "Physiotherapy", description: "Comprehensive physio unit offering rehab, pain management, and wellness support." },
-  { icon: <FaProcedures size={30} className="text-green-600" />, title: "IPD (In-Patient Department)", description: "Comfortable inpatient facilities with attentive care for short & long-term stays." },
-  { icon: <FaBed size={30} className="text-green-600" />, title: "10 IPD Beds", description: "With a variety of accommodation facilities for a comfortable stay during treatment." },
-  { icon: <FaBowlFood size={30} className="text-green-600" />, title: "Food for IPD Patient", description: "Healthy meals for in-patients as part of holistic care." },
-  { icon: <GiMedicalPack size={30} className="text-green-600" />, title: "OPD", description: "Consultations and treatments by our specialized doctors." },
-  { icon: <FaHandHoldingMedical size={30} className="text-green-600" />, title: "Pain Management Unit", description: "Expert consultations including Nadi Pariksha. Privileges for BPL holders." },
-  { icon: <FaHeartbeat size={30} className="text-green-600" />, title: "ECG", description: "On-site ECG and ultrasonography for prompt diagnostics." },
   { icon: <MdLocalPharmacy size={30} className="text-green-600" />, title: "Dispensary", description: "Well-stocked Ayurvedic and modern medicine dispensary." },
+  { icon: <FaHeartbeat size={30} className="text-green-600" />, title: "ECG", description: "On-site ECG and ultrasonography for prompt diagnostics." },
+  { icon: <FaHandHoldingMedical size={30} className="text-green-600" />, title: "Pain Management Unit", description: "Expert consultations including Nadi Pariksha. Privileges for BPL holders." },
+   { icon: <FaBowlFood size={30} className="text-green-600" />, title: "Food for IPD Patient", description: "Healthy meals for in-patients as part of holistic care." },
+   
 ];
 
 const physiotherapyFacilities = [
-  { icon: <FaCapsules size={30} className="text-green-600" />, title: "Cupping Therapy", description: "Traditional cupping therapy by trained practitioners." },
   { icon: <FaHandsHelping size={30} className="text-green-600" />, title: "IFT", description: "Interferential therapy for pain and inflammation relief." },
-  { icon: <FaUserMd size={30} className="text-green-600" />, title: "US Therapy", description: "Ultrasound therapy for tissue healing." },
-  { icon: <FaProcedures size={30} className="text-green-600" />, title: "Traction", description: "Spinal decompression for back and neck issues." },
-  { icon: <FaHeartbeat size={30} className="text-green-600" />, title: "TENS", description: "Electrical stimulation for pain relief." },
+   { icon: <FaHeartbeat size={30} className="text-green-600" />, title: "TENS", description: "Electrical stimulation for pain relief." },
+   { icon: <FaProcedures size={30} className="text-green-600" />, title: "Traction", description: "Spinal decompression for back and neck issues." },
   { icon: <GiMuscleUp size={30} className="text-green-600" />, title: "Muscle Stimulator", description: "Aids recovery and strength building." },
   { icon: <GiUltrasound size={30} className="text-green-600" />, title: "Ultrasound Therapy", description: "Deep heating for soft tissue injuries." },
   { icon: <FaDna size={30} className="text-green-600" />, title: "Nerve Stimulation Therapy", description: "Electrical stimulation for rehab." },
   { icon: <FaHotjar size={30} className="text-green-600" />, title: "Moist Heat Pack Therapy", description: "Improves circulation and relieves stiffness." },
   { icon: <FaSyringe size={30} className="text-green-600" />, title: "Dry Needling", description: "Releases trigger points and muscle tension." },
   { icon: <FaDumbbell size={30} className="text-green-600" />, title: "Exercise Therapy", description: "Custom rehab exercises." },
+   { icon: <FaCapsules size={30} className="text-green-600" />, title: "Cupping Therapy", description: "Traditional cupping therapy by trained practitioners." },
 ];
 
 // ✅ Updated treatments array with imported images
 const treatments =[
-  { name: "Virechana", description: "Detoxification through purgation therapy.", image: VirechanaImg },
   { name: "Vamana", description: "Therapeutic emesis to eliminate Kapha dosha.", image: VamanaImg },
+  { name: "Virechana", description: "Detoxification through purgation therapy.", image: VirechanaImg },
+  { name: "Nasaya", description: "Detoxification through purgation therapy.", image: VirechanaImg },
   { name: "Basti", description: "Enema therapy to balance Vata dosha.", image: BastiImg },
+ { name: "Raktamokshana", description: "Detoxification through purgation therapy.", image: VirechanaImg },
+  { name: "Abhyanga", description: "Rejuvenating full-body oil massage.", image: AbhyangaImg },
   { name: "Udvarthana", description: "Dry powder massage to reduce fat and detox.", image: UdvarthanaImg },
-  { name: "Agni Karma", description: "Thermal therapy for chronic pain conditions.", image: AgniKarmaImg },
   { name: "Bashpasweda", description: "Steam therapy for improving blood circulation.", image: BashpaswedaImg },
   { name: "Valuka Sweda", description: "Sand bolus sweating therapy for joint pain.", image: ValukaSwedaImg },
   { name: "Uttara Basti", description: "Enema therapy specific to urinary/reproductive systems.", image: UttaraBastiImg },
-  { name: "Abhyanga", description: "Rejuvenating full-body oil massage.", image: AbhyangaImg },
   { name: "Kati Basti", description: "Warm oil treatment for lower back pain.", image: KatiBastiImg },
   { name: "Janu Basti", description: "Oil pooling therapy for knee pain relief.", image: JanuBastiImg },
   { name: "Greeva Basti", description: "Neck therapy with warm medicated oil.", image: GreevaBastiImg },
@@ -103,8 +103,9 @@ const treatments =[
   { name: "Lifestyle & Diet Consultation", description: "Personalized guidance on food and habits.", image: LifestyleDietImg },
   { name: "Yoga & Meditation", description: "Mind-body practices for holistic wellness.", image: YogaMeditationImg },
     { name: "Nadi Pariksha (Pulse Diagnosis)", description: "Traditional pulse-based diagnostic method.", image: NadiParikshaImg },
-{ name: "Asya Karma", description: "Oral therapy for dental and mouth issues.", image: asyaKarmaImg },
+{ name: "Viddha Karma", description: "Oral therapy for dental and mouth issues.", image: asyaKarmaImg },
   { name: "Shastika Shali Pinda Sweda", description: "Rejuvenation with rice bolus therapy.", image: ShastikaShaliPindaSwedaImg },
+   { name: "Agni Karma", description: "Thermal therapy for chronic pain conditions.", image: AgniKarmaImg },
 ];
 
 

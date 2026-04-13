@@ -83,8 +83,8 @@ const ContactUs = () => {
       title: 'Hospital Hours',
       details: (
         <div className="space-y-2">
-          <div className="font-semibold text-medical-primary">Mon–Fri: 9:00 AM–4:00 PM</div>
-          <div className="font-semibold text-medical-primary">Sat–Sun: 6:00 PM–9:00 PM</div>
+          <div className="font-semibold text-medical-primary">Mon–Sat: 10:00 AM–5:00 PM</div>
+          <div className="font-semibold text-medical-primary">Sat–Sun: 10:00 PM–2:00 PM</div>
           <p className="text-sm mt-3">Walk-ins welcome during operating hours</p>
         </div>
       ),
@@ -95,6 +95,7 @@ const ContactUs = () => {
       details: (
         <div className="space-y-2">
           <div className="text-2xl font-bold text-medical-primary">+91 9535261996</div>
+          <div className="text-2xl font-bold text-medical-primary">+91 7349325114</div>
           <div className="text-sm">Mon–Fri: 9:00 AM–4:00 PM</div>
           <div className="text-sm italic text-medical-accent">Weekends: Use chat or email</div>
         </div>
@@ -107,8 +108,17 @@ const ContactUs = () => {
         <div className="space-y-2">
           <div className="font-semibold text-medical-primary">healthyayurveda.patil@gmail.com</div>
           <div className="text-sm">Response within 24 hours</div>
-          <div className="text-sm">Mon–Fri: 9:00 AM–4:00 PM</div>
-          <div className="text-sm">Sat–Sun: 10:00 AM–12:00 PM</div>
+          <div className="text-sm">Mon–Sat: 10:00 AM–5:00 PM</div>
+          <div className="text-sm">Sat–Sun: 10:00 AM–2:00 PM</div>
+        </div>
+      ),
+    },
+    {
+      icon: <Mail className="w-8 h-8" />,
+      title: 'Email Support',
+      details: (
+        <div className="flex flex-col items-center text-center space-y-2">
+         <div className="font-semibold text-medical-primary">Every month Last Saturday and Sunday holidaty</div>
         </div>
       ),
     },

@@ -26,6 +26,7 @@ import SwarnaprashanaPatientDetails from './Components/Patients/Swarnaprashana/S
 import PatientDetails from './Components/Patients/Indivusalpatent/IndivusalpatentOpdDetail/IndivusalPatent'
 import PrescriptionTemplate from './Components/Patients/Indivusalpatent/PrescriptionTemplate';
 import IpPatient from './Components/Patients/IPD/IpPatient';
+import DischargePage from './Components/Patients/IPD/DischargePage';
 //import LatestUpdates from './pages/LatestUpdates';
 const AuthSyncWrapper = ({ children }) => {
   const dispatch = useDispatch();
@@ -60,6 +61,7 @@ function App() {
           <Route path="add-medicine" element={<PrivateRoute><AddMedicine/></PrivateRoute>} />
           <Route path="medicine-list" element={<PrivateRoute><MedicineList/></PrivateRoute>} />
           <Route path="swarna-parasana" element={<Swarnaprashana/>} />
+          <Route path="/discharge/:ipNumber" element={<DischargePage />} />
           <Route path="/patient/:patientId" element={<SwarnaprashanaPatientDetails />}/>
           <Route path="/patients/:clinicId" element={<PatientDetails />} />
           <Route path="/ip-patient/:clinicId" element={<IpPatient />} />

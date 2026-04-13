@@ -45,9 +45,8 @@ const handleLogout = () => {
           <img src={Logo} alt="Logo" className="h-10 sm:h-12 w-auto rounded mr-4" />
           {isAuthenticated && (
            <span className="text-white font-bold text-xl block">
-  Dr Patil's Navajeevana Chikitsakendra  
+  Navajeevana Chikitsakendra Virapur
 </span>
-
           )}
         </div>
 
